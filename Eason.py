@@ -241,7 +241,7 @@ class Eason(pygame.sprite.Sprite):
         return False
     
     def hit(self, target):
-        if self.status != Eason.ATK:
+        if self.status != Eason.ATK and self.status != Eason.DOWN:
             return False
         hitbox = self.rect.inflate(-30, -10)
         return hitbox.colliderect(target.rect.inflate(-20, -5))
