@@ -15,11 +15,11 @@ from EsSounds import *
 from EsTimer import *
 
 JMP_ACC = 0.3
-DWN_ACC = 3
+DRP_ACC = 3
 
 class Eason(pygame.sprite.Sprite):
     '''REMEMBER EVERY TIME ADD ONE STATUS, ADD ONE NUMBER'''
-    RUN, JUMP, ATK, DEAD, DOWN = range(5)
+    RUN, JUMP, ATK, DEAD, DROP = range(5)
     def __init__(self, pos):
         #--------------------------INITIALIZATION------------------------------
         pygame.sprite.Sprite.__init__(self)
@@ -57,7 +57,7 @@ class Eason(pygame.sprite.Sprite):
         animList = [self.images[60], self.images[61], self.images[63]]
         self.anim_jmp2 = Animation(animList, 20, False)
         animList = [self.images[58], self.images[59], self.images[69]]
-        self.anim_down = Animation(animList, 10, True)
+        self.anim_DROP = Animation(animList, 10, True)
         animList = [self.images[0], self.images[1], self.images[2], \
                     self.images[3], self.images[4]]
         self.anim_punch = Animation(animList, 40, False)
@@ -114,20 +114,24 @@ class Eason(pygame.sprite.Sprite):
             self.anim_run.reset()
             self.anim_run.start()
     
-    def down(self):
+    def drop(self):
         if self.status == Eason.DEAD:
             return 
-        self.status = Eason.DOWN
-        self.a_y = DWN_ACC
-        if not self.anim_down._start:
-            self.anim_down.reset()
-            self.anim_down.start()
+        self.status = Eason.DROP
+        self.a_y = DRP_ACC
+        if not self.anim_DROP._start:
+            self.anim_DROP.reset()
+            self.anim_DROP.start()
+        if not self.atkDone:
+            self.atkDone = True
     
     def jump(self):
         if self.status == Eason.DEAD:
             return
         if self.jmp_cnt == 2:
             return 
+        if not self.atkDone:
+            self.atkDone = True
         self.sound_jmp.play()
         self.status = Eason.JUMP
         self.v_y = -7
@@ -181,7 +185,7 @@ class Eason(pygame.sprite.Sprite):
         self.a_y = 0
         
     def fall(self):
-        if not self.a_y == DWN_ACC:
+        if not self.a_y == DRP_ACC:
             self.a_y = JMP_ACC
             if (not self.isDead()) and (not self.acting()):
                 self.status = Eason.JUMP
@@ -241,7 +245,7 @@ class Eason(pygame.sprite.Sprite):
         return False
     
     def hit(self, target):
-        if self.status != Eason.ATK and self.status != Eason.DOWN:
+        if self.status != Eason.ATK and self.status != Eason.DROP:
             return False
         hitbox = self.rect.inflate(-30, -10)
         return hitbox.colliderect(target.rect.inflate(-20, -5))
@@ -259,9 +263,9 @@ class Eason(pygame.sprite.Sprite):
                 self.image = self.anim_jmp2.image
                 self.anim_jmp2.update(pygame.time.get_ticks())
         
-        if self.status == Eason.DOWN:
-            self.image = self.anim_down.image
-            self.anim_down.update(pygame.time.get_ticks())
+        if self.status == Eason.DROP:
+            self.image = self.anim_DROP.image
+            self.anim_DROP.update(pygame.time.get_ticks())
             
         if self.status == Eason.ATK:
             self.image = self.anim_atk.image

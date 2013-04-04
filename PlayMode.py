@@ -62,7 +62,7 @@ class PlayMode(GameMode):
         if keys[K_a]:
             self.eason.attack()
         if keys[K_k]:
-            self.eason.down()
+            self.eason.drop()
     
     def add_new_floor(self):
         last_floor = self.floors[len(self.floors) - 1]
@@ -154,11 +154,11 @@ class PlayMode(GameMode):
     def draw(self, screen):
         screen.blit(PlayMode.background, (0, 0))
         screen.blit(self.board.image, self.board.rect)
-        screen.blit(self.eason.image, self.eason.rect)
         for i in self.floors:
             screen.blit(i.image, i.rect)
         for i in self.joes:
             screen.blit(i.image, i.rect)
+        screen.blit(self.eason.image, self.eason.rect)
         pygame.display.flip()
         
         
