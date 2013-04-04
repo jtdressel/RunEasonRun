@@ -42,40 +42,52 @@ class StartingMode(GameMode):
         self.eason.setPos((X + 150, Y))
         self.status = StartingMode.IDLE
         self.joe.reset()
+        self.skip = False
         #pygame.mixer.music.play(-1)
         
     def exit(self):
         pygame.mouse.set_visible(True)
+        self.anim_line.start()
+        self.eason.stand()
+        self.so_far = 0
+        self.eason.cnt = 0
+        self.eason.setPos((X + 150, Y))
+        self.status = StartingMode.IDLE
+        self.joe.reset()
+        self.skip = False
     
     def key_down(self, event):
         if event.key == K_ESCAPE:
             self.quit()
         else:
             if self.status == StartingMode.STARTING:
-                return 
+                self.skip = True
             self.status = StartingMode.STARTING
+            if self.skip:
+                self.switch_to_mode('play_mode')
             self.joe.run()
         
     def update(self, clock):
         self.img_line = self.anim_line.image
         self.anim_line.update(pygame.time.get_ticks()) 
         
-        if self.joe.arrived():
-            self.joe.stand()
-        if self.joe.anim_stand.done() and self.joe.punchCnt == 0:
-            self.joe.punch()
-            self.eason.beat()
-            StartingMode.attack_sounds[randint(0, 3)].play()
-        if self.joe.anim_punch.done() and self.joe.notFinish():
-            self.joe.punch()
-            self.eason.beat()
-            StartingMode.attack_sounds[randint(0, 3)].play()
-        if not self.joe.notFinish() and self.joe.notKicked():
-            self.joe.kick()
-            self.eason.fly()
-            StartingMode.attack_sounds[randint(0, 3)].play()
-        if self.joe.anim_kick.done() and (not self.joe.anim_esc.started()):
-            self.joe.esc()
+        if self.status == StartingMode.STARTING:
+            if self.joe.arrived():
+                self.joe.stand()
+            if self.joe.anim_stand.done() and self.joe.punchCnt == 0:
+                self.joe.punch()
+                self.eason.beat()
+                StartingMode.attack_sounds[randint(0, 3)].play()
+            if self.joe.anim_punch.done() and self.joe.notFinish():
+                self.joe.punch()
+                self.eason.beat()
+                StartingMode.attack_sounds[randint(0, 3)].play()
+            if not self.joe.notFinish() and self.joe.notKicked():
+                self.joe.kick()
+                self.eason.fly()
+                StartingMode.attack_sounds[randint(0, 3)].play()
+            if self.joe.anim_kick.done() and (not self.joe.anim_esc.started()):
+                self.joe.esc()
             
         self.eason.update()
         self.joe.update()

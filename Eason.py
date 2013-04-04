@@ -313,6 +313,7 @@ class SimpleEason():
     def stand(self):
         self.status = SimpleEason.STAND
         self.anim_stand.start()
+        self.setSpeed(0, 0)
     
     def run(self):
         self.status = SimpleEason.RUN

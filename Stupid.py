@@ -126,6 +126,7 @@ class SimpleStupid():
         for i in self.anim_atks:
             i.reset()
         self.setPos(self.initP)
+        self.setSpeed(0, 0)
     
     def run(self):
         self.status = SimpleStupid.RUN
