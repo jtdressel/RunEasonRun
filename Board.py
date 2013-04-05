@@ -43,11 +43,14 @@ class Board():
             self.image.blit(dgt, (51 + 26 * i, 4))
         self.image.blit(Board.M, (55 + len(strDist) * 26, 4))
         
-    def update(self, lv, dist):
+    def update_cooldown(self, cd):
+        if(cd):
+            self.image.blit(Board.M, (255, 4)) #Placeholder. Show M while cooldown is active
+
+    def update(self, lv, dist, cd):
         self.dist += dist
         self.dist = int(self.dist)
         self.image.fill((66, 80, 102))
         self.update_distance(dist)
         self.update_level(lv)
-
-
+        self.update_cooldown(cd)

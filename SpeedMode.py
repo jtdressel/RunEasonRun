@@ -160,7 +160,7 @@ class SpeedMode(GameMode):
         for i in self.joes:
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
-        self.board.update(self.eason.level, self.eason.v_x / 3 )
+        self.board.update(self.eason.level, self.eason.v_x / 3, self.eason.CDtimer.isStart())
     
     ## draw elements onto the given screen
     def draw(self, screen):
