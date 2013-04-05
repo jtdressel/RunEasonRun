@@ -25,20 +25,17 @@ class Board():
     def reset(self):
         self.dist = 0
     
-    def update(self, lv, dist):
-        self.dist += dist
-        self.dist = int(self.dist)
-        self.image.fill((66, 80, 102))
-        
-        #Display the current level number
-        strLv = str(lv)
+    #Display the current level number
+    def update_level(self, level):
+        strLv = str(level)
         for i in range(len(strLv)):
             x = int(strLv[i])
             dgt = Board.digits[x]
             self.image.blit(dgt, (405 + 88 + 26 * i, 4))
         self.image.blit(Board.img_lv, (400, 4))
-        
-        # Display the sistance ran
+
+    # Display the sistance ran
+    def update_distance(self, distance):
         strDist = str(self.dist)
         for i in range(len(strDist)):
             x = int(strDist[i])
@@ -46,3 +43,11 @@ class Board():
             self.image.blit(dgt, (51 + 26 * i, 4))
         self.image.blit(Board.M, (55 + len(strDist) * 26, 4))
         
+    def update(self, lv, dist):
+        self.dist += dist
+        self.dist = int(self.dist)
+        self.image.fill((66, 80, 102))
+        self.update_distance(dist)
+        self.update_level(lv)
+
+
