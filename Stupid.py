@@ -19,7 +19,7 @@ class Stupid(pygame.sprite.Sprite):
     def __init__(self, pos):
         #-----------------------INITIALIZATION---------------------------------
         pygame.sprite.Sprite.__init__(self)
-        self.images = loadImage('0.png', -1, 80, 80)
+        self.images = loadSprites('0.png', -1, 80, 80)
         self.rect = self.images[0].get_rect()
         
         #-----------------------ATTRIBUTES-------------------------------------
@@ -88,7 +88,7 @@ class SimpleStupid():
     def __init__(self, p, x):
         self.setPos(p)
         self.initP = p
-        self.images = loadImage('0.png', -1, 80, 80)
+        self.images = loadSprites('0.png', -1, 80, 80)
         self.rect = self.images[0].get_rect()
         
         animLst = [self.images[27], self.images[28], self.images[29], \

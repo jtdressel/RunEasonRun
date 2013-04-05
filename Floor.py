@@ -19,7 +19,7 @@ class Floor(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.x, self.y = pos
         self.width, self.height = size
-        self.image = createColoredImage(size, (0, 0, 0))
+        self.image = createColoredImage(size, (255, 255, 255))
         self.rect = self.image.get_rect()
         self.rect.topleft = self.x, self.y
         

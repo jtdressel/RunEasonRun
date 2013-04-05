@@ -15,6 +15,7 @@ kGlobals = 'globals.json'
 dirSprites = 'sprites'
 dirSounds = 'sounds'
 dirBGM = 'bgm'
+dirImg = 'img'
 globals = json.load(open(os.path.join(kSrcDir, kGlobals)))
 FPS = globals['fps']
 size = width, height = globals['screen_size']

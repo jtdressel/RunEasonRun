@@ -14,7 +14,8 @@ from EsImage import *
 from EsSounds import *
 from modes import *
 from StartingMode import *
-from PlayMode import *
+from SpeedMode import *
+from MenuMode import *
 
 def loadIcon(name):
     fullname = os.path.join(kSrcDir, name)
@@ -37,9 +38,10 @@ def main():
     modes = ModeManager()
     ## register the two modes
     modes.register_mode('start_mode', StartingMode())
-    modes.register_mode('play_mode', PlayMode())
-    ## program starts with startingmode
-    modes.switch_to_mode('start_mode')
+    modes.register_mode('speed_mode', SpeedMode())
+    modes.register_mode('menu_mode', MenuMode())
+    ## program starts with shell menu
+    modes.switch_to_mode('menu_mode')
     ## main loop
     while not modes.quitting():
         clock.tick(FPS)

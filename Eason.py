@@ -23,7 +23,7 @@ class Eason(pygame.sprite.Sprite):
     def __init__(self, pos):
         #--------------------------INITIALIZATION------------------------------
         pygame.sprite.Sprite.__init__(self)
-        self.images = loadImage('eason1.png', -1, 80, 80)
+        self.images = loadSprites('eason1.png', -1, 80, 80)
         self.sound_jmp = load_sound('jump.wav')
         self.sound_atk = load_sound('attack.wav')
         self.sound_gameover = load_sound('gameover.wav')
@@ -282,10 +282,13 @@ class Eason(pygame.sprite.Sprite):
         self.move()
         self.rect.topleft = self.x, self.y
         
+class BrawlEason(Eason):
+    pass        
+
 class SimpleEason():
     STAND, BEAT, RUN, FLY = range(4)
     def __init__(self, p):
-        self.images = loadImage('eason0.png', -1, 80, 80)
+        self.images = loadSprites('eason0.png', -1, 80, 80)
         
         animLst = [self.images[1], self.images[2], self.images[3], \
                    self.images[0]]
@@ -337,7 +340,7 @@ class SimpleEason():
     def fly(self):
         self.status = SimpleEason.FLY
         self.anim_fly.start()
-        self.setSpeed(-3, 0)
+        self.setSpeed(-3.5, 0)
         self.flyPause = SimpleTimer(2000)
         self.stt = 0
     

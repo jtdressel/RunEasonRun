@@ -18,13 +18,13 @@ class StartingMode(GameMode):
     attack_sounds = []
     def __init__(self):
         GameMode.__init__(self)
-        self.lines = loadImage('starting_line.png', -1, 441, 42)
+        self.lines = loadSprites('skip_line.png', -1, 441, 42)
         self.line_x, self.line_y = self.line_pos = 100, 280
         self.anim_line = Animation(self.lines, 5, True)
         self.rect_line = self.lines[0].get_rect()
         self.rect_line.topleft = self.line_pos
-        self.eason = SimpleEason((X + 150, Y))
-        self.joe = SimpleStupid((width, Y), X + 150 + 40)
+        self.eason = SimpleEason((X + 200, Y))
+        self.joe = SimpleStupid((width, Y), X + 200 + 40)
         self.status = StartingMode.IDLE
         for i in range(4):
             name = 'punch' + str(i) + '.wav'
@@ -36,22 +36,24 @@ class StartingMode(GameMode):
         StartingMode.background.convert()
         StartingMode.background.fill((255, 255, 255))
         self.anim_line.start()
+        self.img_line = self.anim_line.image
         self.eason.stand()
         self.so_far = 0
         self.eason.cnt = 0
-        self.eason.setPos((X + 150, Y))
+        self.eason.setPos((X + 200, Y))
         self.status = StartingMode.IDLE
         self.joe.reset()
         self.skip = False
+        self.eason.update()
         #pygame.mixer.music.play(-1)
         
     def exit(self):
         pygame.mouse.set_visible(True)
-        self.anim_line.start()
+        self.anim_line.reset()
         self.eason.stand()
         self.so_far = 0
         self.eason.cnt = 0
-        self.eason.setPos((X + 150, Y))
+        self.eason.setPos((X + 200, Y))
         self.status = StartingMode.IDLE
         self.joe.reset()
         self.skip = False
@@ -64,7 +66,7 @@ class StartingMode(GameMode):
                 self.skip = True
             self.status = StartingMode.STARTING
             if self.skip:
-                self.switch_to_mode('play_mode')
+                self.switch_to_mode('speed_mode')
             self.joe.run()
         
     def update(self, clock):
@@ -93,7 +95,7 @@ class StartingMode(GameMode):
         self.joe.update()
         
         if self.eason.status == SimpleEason.RUN:
-            self.switch_to_mode('play_mode')
+            self.switch_to_mode('speed_mode')
         
         
     def draw(self, screen):
