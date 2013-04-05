@@ -30,6 +30,7 @@ class Board():
         self.dist = int(self.dist)
         self.image.fill((66, 80, 102))
         
+        #Display the current level number
         strLv = str(lv)
         for i in range(len(strLv)):
             x = int(strLv[i])
@@ -37,6 +38,7 @@ class Board():
             self.image.blit(dgt, (405 + 88 + 26 * i, 4))
         self.image.blit(Board.img_lv, (400, 4))
         
+        # Display the sistance ran
         strDist = str(self.dist)
         for i in range(len(strDist)):
             x = int(strDist[i])
