@@ -82,4 +82,7 @@ class BrawlEason(Eason):
 		self.anim_dead.reset()
 		self.anim_dead.start()
 
+	#def attack(self):
+
+
 	
