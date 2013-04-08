@@ -282,8 +282,8 @@ class Eason(pygame.sprite.Sprite):
         self.move()
         self.rect.topleft = self.x, self.y
         
-class BrawlEason(Eason):
-    pass        
+# class BrawlEason(Eason):
+#     pass        
 
 class SimpleEason():
     STAND, BEAT, RUN, FLY = range(4)

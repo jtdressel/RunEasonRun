@@ -1,5 +1,5 @@
 """
-Copy all attributes of Eason to BrawlEason, including animations and sounds
+Copy all attributes of BrawlEason to BrawlEason, including animations and sounds
 """
 from Eason import *
 
@@ -15,11 +15,14 @@ class BrawlEason(Eason):
 		self.atkDone = True
 		#add a special attack atribute later
 
-		#-----------------------BRAWL ANIMATIONS-------------------------
+		#------------------ADDITIONAL BRAWL ANIMATIONS-------------------------
 
+		self.images = loadSprites('eason0.png', -1, 80, 80)
+		animList = [self.images[0], self.images[1], self.images[2], self.images[3]]
+		self.anim_stand = Animation(animList, 20, True)
 
 	"""
-	Any methods not changed are the same as Eason
+	Any methods not changed are the same as BrawlEason
 	"""
 
 	def reset(self):
@@ -53,7 +56,7 @@ class BrawlEason(Eason):
 			return
 
 	def stepOn(self):
-		""" Check to see if Eason steps beyond x,y bounds """
+		""" Check to see if BrawlEason steps beyond x,y bounds """
 		x, y = width, height
 		if self.rect.top < y/3 or self.rect.bottom > y:
 			return False
@@ -104,5 +107,45 @@ class BrawlEason(Eason):
 		return False
 
 	def hit(self, target):
-		
+		if self.status != BrawlEason.ATK and self.status != BrawlEason.DROP:
+			return False
+		hitbox = self.rect.inflate(-30, -10)
+		return hitbox.colliderect(target.rect.inflate(-20, -5)) #Ask Eason about these Values
+
+	def update(self):
+		if self.status == BrawlEason.RUN:
+			self.image = self.anim_run.image
+			self.anim_run.update(pygame.time.get_ticks())
+
+		if self.status == BrawlEason.STAND:
+			self.image = self.anim_stand.image
+			self.anim_run.update(pygame.time.get_ticks())
+        	    
+		if self.status == BrawlEason.JUMP:
+			if self.jmp_cnt == 1:
+				self.image = self.anim_jmp.image
+				self.anim_jmp.update(pygame.time.get_ticks())
+			elif self.jmp_cnt == 2:
+				self.image = self.anim_jmp2.image
+				self.anim_jmp2.update(pygame.time.get_ticks())
+        
+		if self.status == BrawlEason.DROP:
+			self.image = self.anim_DROP.image
+			self.anim_DROP.update(pygame.time.get_ticks())
+            
+		if self.status == BrawlEason.ATK:
+			self.image = self.anim_atk.image
+			self.anim_atk.update(pygame.time.get_ticks())
+			self.atkMove()
+            
+		if self.status == BrawlEason.DEAD:
+			self.image = self.anim_dead.image
+			self.anim_dead.update(pygame.time.get_ticks())
+        
+		if self.status != BrawlEason.DEAD and self.CDtimer.timeUp():
+			self.sound_cd.play()
+        
+		self.move()
+		self.rect.topleft = self.x, self.y
+
 	
