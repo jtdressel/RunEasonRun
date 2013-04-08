@@ -82,7 +82,27 @@ class BrawlEason(Eason):
 		self.anim_dead.reset()
 		self.anim_dead.start()
 
-	#def attack(self):
+	def attack(self):
+		pass
 
+	def fixPos(self, y):
+		pass
 
+	def atkMove(self):
+		if self.x - self.init_x < self.atk_range and not self.atkDone:
+			self.x += 19 + self.level
+		else:
+			self.atkDone = True
+			if self.kick:
+				self.status = BrawlEason.JUMP
+			else:
+				self.status = BrawlEason.RUN
+
+	def acting(self):
+		if self.status == BrawlEason.ATK:
+			return True
+		return False
+
+	def hit(self, target):
+		
 	
