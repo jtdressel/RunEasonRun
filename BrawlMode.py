@@ -42,6 +42,21 @@ class BrawlMode(GameMode):
 		self.joes = []
 		pygame.mouse.set_visible(True)
 
+	def key_down(self, event):
+		##check for input
+		##WASD input for movement
+		if event.key == K_ESCAPE:
+			self.switch_to_mode('menu_mode')
+		keys = pygame.key.get_pressed()
+		if keys[K_w]:
+			pass
+		if keys[K_a]:
+			pass
+		if keys[K_d]:
+			pass
+		if keys[K_s]:
+			pass
+
 	def spawn_enemy(self):
 		pass
 
