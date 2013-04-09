@@ -17,7 +17,7 @@ class BrawlMode(GameMode):
 
 	def __init__(self):
 		GameMode.__init__(self)
-		self.eason = BrawlEason(pos)
+		self.eason = BrawlEason( (300,300) )
 		self.background = Background('demoStreet.png')
 		for i in range(4):
 			name = 'punch' + str(i) + '.wav'
@@ -45,17 +45,25 @@ class BrawlMode(GameMode):
 	def key_down(self, event):
 		##check for input
 		##WASD input for movement
+		moveSpeed = 5
+		x = 0
+		y = 0
 		if event.key == K_ESCAPE:
 			self.switch_to_mode('menu_mode')
 		keys = pygame.key.get_pressed()
 		if keys[K_w]:
-			pass
+			y = -moveSpeed
 		if keys[K_a]:
-			pass
+			x = -moveSpeed
 		if keys[K_d]:
-			pass
+			x = moveSpeed
 		if keys[K_s]:
-			pass
+			y = moveSpeed
+		else:
+			self.eason.stand()
+
+		movement = (x,y)
+		self.eason.run(movement)
 
 	def spawn_enemy(self):
 		pass
@@ -71,9 +79,14 @@ class BrawlMode(GameMode):
 					self.eason.gameOver()
 
 	def check_death(self, clock):
+		if self.eason.isDead():
+			self.eason.gameOver()
+
+	def update(self, clock):
 		self.battle()
 		self.check_death(clock)
 		self.eason.update()
+		#self.background.update()
 
 	def draw(self, screen):
 		self.background.draw(screen)
@@ -81,4 +94,3 @@ class BrawlMode(GameMode):
 		# 	screen.blit(i.image, i.rect)
 		screen.blit(self.eason.image, self.eason.rect)
 		pygame.display.flip()
-

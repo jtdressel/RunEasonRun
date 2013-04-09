@@ -4,10 +4,12 @@ Copy all attributes of BrawlEason to BrawlEason, including animations and sounds
 from Eason import *
 
 class BrawlEason(Eason):
+	'''REMEMBER EVERY TIME ADD ONE STATUS, ADD ONE NUMBER'''
 	RUN, JUMP, ATK, DEAD, DROP, STAND = range(6) #CHANGE/ADD ACTIONS  
 	def __init__(self, pos):
 
 		Eason.__init__(self, pos)
+		##loads sounds and images from Eason
 
 		#---------------- BRAWL EASON STATS -------------------------------------
 
@@ -20,7 +22,6 @@ class BrawlEason(Eason):
 		#------------------ ADDITIONAL BRAWL ANIMATIONS -------------------------
 
 		self.images = loadSprites('eason0.png', -1, 80, 80) #the other sprite sheet
-
 		animList = [self.images[0], self.images[1], self.images[2], self.images[3]]
 		self.anim_stand = Animation(animList, 20, True)
 
@@ -68,6 +69,7 @@ class BrawlEason(Eason):
 		return True
 
 	def stand(self):
+		self.status = BrawlEason.STAND
 		self.v_x = 0
 		self.v_y = 0
 		self.a_x = 0
@@ -122,7 +124,7 @@ class BrawlEason(Eason):
 
 		if self.status == BrawlEason.STAND:
 			self.image = self.anim_stand.image
-			self.anim_run.update(pygame.time.get_ticks())
+			self.anim_stand.update(pygame.time.get_ticks())
         	    
 		if self.status == BrawlEason.JUMP:
 			if self.jmp_cnt == 1:
@@ -148,7 +150,7 @@ class BrawlEason(Eason):
 		if self.status != BrawlEason.DEAD and self.CDtimer.timeUp():
 			self.sound_cd.play()
         
-		self.move()
-		self.rect.topleft = self.x, self.y
+		#self.move()
+		#self.rect.topleft = self.x, self.y
 
 	
