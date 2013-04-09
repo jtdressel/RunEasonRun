@@ -16,6 +16,7 @@ from modes import *
 from StartingMode import *
 from SpeedMode import *
 from MenuMode import *
+from BrawlMode import *
 
 def loadIcon(name):
     fullname = os.path.join(kSrcDir, name)
@@ -40,6 +41,7 @@ def main():
     modes.register_mode('start_mode', StartingMode())
     modes.register_mode('speed_mode', SpeedMode())
     modes.register_mode('menu_mode', MenuMode())
+    modes.register_mode('brawl_mode', BrawlMode())
     ## program starts with shell menu
     modes.switch_to_mode('menu_mode')
     ## main loop

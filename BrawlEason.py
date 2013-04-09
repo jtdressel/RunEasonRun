@@ -5,9 +5,11 @@ from Eason import *
 
 class BrawlEason(Eason):
 	RUN, JUMP, ATK, DEAD, DROP, STAND = range(6) #CHANGE/ADD ACTIONS  
-	def __init__(self):
+	def __init__(self, pos):
 
 		Eason.__init__(self, pos)
+
+		#---------------- BRAWL EASON STATS -------------------------------------
 
 		self.v_x = 0
 		self.status = BrawlEason.STAND
@@ -15,9 +17,10 @@ class BrawlEason(Eason):
 		self.atkDone = True
 		#add a special attack atribute later
 
-		#------------------ADDITIONAL BRAWL ANIMATIONS-------------------------
+		#------------------ ADDITIONAL BRAWL ANIMATIONS -------------------------
 
-		self.images = loadSprites('eason0.png', -1, 80, 80)
+		self.images = loadSprites('eason0.png', -1, 80, 80) #the other sprite sheet
+
 		animList = [self.images[0], self.images[1], self.images[2], self.images[3]]
 		self.anim_stand = Animation(animList, 20, True)
 
