@@ -13,10 +13,10 @@ from Eason import *
 from Stupid import *
 
 class MenuMode(GameMode):
-    background = createBlankImage(size, False)
+    background = createBlankImage(size, False, (200, 200, 255))
     IDLE, STARTING = range(2)
     attack_sounds = []
-    modes = ['start_mode', 'speed_mode', 'speed_mode']
+    modes = ['start_mode', 'speed_mode', 'brawl_mode']
     def __init__(self):
         GameMode.__init__(self)
         images = loadSprites('options.png', -1, 258, 38)

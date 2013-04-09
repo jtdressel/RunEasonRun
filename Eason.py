@@ -23,7 +23,7 @@ class Eason(pygame.sprite.Sprite):
     def __init__(self, pos):
         #--------------------------INITIALIZATION------------------------------
         pygame.sprite.Sprite.__init__(self)
-        self.images = loadSprites('eason1.png', -1, 80, 80)
+        self.images = loadSprites('eason0.png', -1, 80, 80)
         self.sound_jmp = load_sound('jump.wav')
         self.sound_atk = load_sound('attack.wav')
         self.sound_gameover = load_sound('gameover.wav')
@@ -283,16 +283,106 @@ class Eason(pygame.sprite.Sprite):
         self.rect.topleft = self.x, self.y
         
 class BrawlEason(Eason):
-    pass        
+    WALK, RUN, JUMP, ATK, DEAD, HIT, STAND = range(7)
+    RIGHT, LEFT = range(2)
+    def __init__(self, pos, up, lo):
+        Eason.__init__(self, pos)
+        animList = [self.images[23], self.images[24], self.images[25], self.images[26], \
+                    self.images[25], self.images[24]]
+        self.anim_walk = Animation(animList, 10, True)
+        animList = [self.images[36], self.images[37], self.images[38], \
+                   self.images[18]]
+        self.anim_stand = Animation(animList, 10, True)
+        self.direction = BrawlEason.RIGHT
+        self.upperBound, self.lowerBound = up, lo
+    
+    def newBound(self, nu, nl):
+        self.upperBound, self.lowerBound = nu, nl
+    
+    def setVelocity(self, vx = None, vy = None):
+        if vx != None:
+            self.v_x += vx
+        if vy != None:
+            self.v_y += vy
+    
+    def walk(self):
+        self.status = BrawlEason.WALK
+        if not self.anim_walk.started():
+            self.anim_walk.start()
+        if self.v_x > 0:
+            self.direction = BrawlEason.RIGHT
+        elif self.v_x < 0:
+            self.direction = BrawlEason.LEFT
+            
+    def stand(self):
+        if self.status == BrawlEason.STAND:
+            return 
+        self.status = BrawlEason.STAND
+        self.v_x, self.v_y = 0, 0
+        self.anim_stand.reset()
+        self.anim_stand.start()
+    
+    def isMoving(self):
+        if self.v_x == 0 and self.v_y == 0:
+            return False
+        return True
+    
+    def move(self):
+        t = 1
+        s_x = self.v_x * t + self.a_x * t * t / 2
+        s_y = self.v_y * t + self.a_y * t * t / 2
+        self.v_x = self.v_x + self.a_x * t
+        self.v_y = self.v_y + self.a_y * t
+        self.y += s_y
+        self.x += s_x
+        if self.x < -40:
+            self.x = -40
+        if self.x > width - 40:
+            self.x = width - 40
+        if self.y > self.lowerBound - 80:
+            self.y = self.lowerBound - 80
+        if self.y < self.upperBound - 80:
+            self.y = self.upperBound - 80
+    
+    def update(self):
+        # Eason.update(self)
+        if self.status == BrawlEason.WALK:
+            self.image = self.anim_walk.image
+            if self.direction == BrawlEason.LEFT:
+                self.image = pygame.transform.flip(self.image, 1, 0)
+            self.anim_walk.update(pygame.time.get_ticks())
+            
+        if self.status == BrawlEason.STAND:
+            self.image = self.anim_stand.image
+            if self.direction == BrawlEason.LEFT:
+                self.image = pygame.transform.flip(self.image, 1, 0)
+            self.anim_stand.update(pygame.time.get_ticks())
+        
+        if not self.isMoving():
+            self.stand()
+        else:
+            if math.fabs(self.v_x) == v_w:
+                self.walk()
+            if math.fabs(self.v_x) == v_r:
+                self.run()
+            if self.v_y:
+                if math.fabs(self.v_x) == v_r:
+                    self.run()
+                else:
+                    self.walk()
+        self.move()
+        self.rect.topleft = self.x, self.y
+
+
 
 class SimpleEason():
     STAND, BEAT, RUN, FLY = range(4)
     def __init__(self, p):
         self.images = loadSprites('eason0.png', -1, 80, 80)
         
-        animLst = [self.images[1], self.images[2], self.images[3], \
-                   self.images[0]]
-        self.anim_stand = Animation(animLst, 10, True)
+        animLst = [self.images[36], self.images[37], self.images[38], \
+                   self.images[18]]
+        self.anim_stand = Animation(animLst, 8, True)
         animLst = [self.images[20], self.images[21]]
         self.anim_run = Animation(animLst, 10, True)
         animLst = [self.images[46], self.images[47], self.images[48]]

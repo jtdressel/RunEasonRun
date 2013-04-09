@@ -7,5 +7,6 @@
 	"sound_volume": 0.2,
 	"difficulty": 0.1,
 	"hit_time": 10,
-	"city.png": [1577, 400]
+	"v_walk": 1.5,
+	"v_run": 2.5
 }

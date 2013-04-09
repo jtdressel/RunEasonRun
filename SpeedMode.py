@@ -11,11 +11,10 @@ from EsAnimation import *
 from Eason import *
 from Floor import *
 from Stupid import *
-from Board import *
+from Bar import *
 from Background import *
 
 class SpeedMode(GameMode):
-    background = pygame.Surface(size)
     attack_sounds = []
     
     def __init__(self):
@@ -27,7 +26,7 @@ class SpeedMode(GameMode):
             SpeedMode.attack_sounds.append(load_sound(name))
             SpeedMode.attack_sounds[i].set_volume(sound_volume)
         self.so_far = 0
-        self.board = Board()
+        self.bar = Bar('city')
         self.eason.run()
         
     def enter(self):
@@ -42,7 +41,7 @@ class SpeedMode(GameMode):
         self.joes = []
         self.eason.run()
         self.so_far = 0
-        self.board.reset()
+        self.bar.reset()
         self.eason.update()
         
     def exit(self):
@@ -138,7 +137,7 @@ class SpeedMode(GameMode):
                     SpeedMode.attack_sounds[randint(0, 3)].play()
                     self.eason.gameOver()
     
-    ## switch to startmode if Eason dies
+    ## switch to start mode if Eason dies
     def check_death(self, clock):
         if self.eason.isDead():
             pygame.mixer.music.stop()
@@ -160,12 +159,13 @@ class SpeedMode(GameMode):
         for i in self.joes:
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
-        self.board.update(self.eason.level, self.eason.v_x / 3 )
+        self.bar.update(self.eason.level, self.eason.v_x / 3 )
     
     ## draw elements onto the given screen
     def draw(self, screen):
         self.background.draw(screen)
-        screen.blit(self.board.image, self.board.rect)
+        self.bar.draw(screen)
+        screen.blit(self.bar.image, self.bar.rect)
         for i in self.floors:
             screen.blit(i.image, i.rect)
         for i in self.joes:
