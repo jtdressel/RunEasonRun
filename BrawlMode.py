@@ -33,7 +33,8 @@ class BrawlMode(GameMode):
             self.eason.setVelocity(horizontal[event.key], None)
         if event.key in vertical:
             self.eason.setVelocity(None, vertical[event.key])
-        
+        if event.key == K_j:
+        	self.eason.attack()
     
     def key_up(self, event):
         horizontal = {K_a: v_w, K_d: -v_w}
