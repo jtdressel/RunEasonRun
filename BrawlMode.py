@@ -59,7 +59,6 @@ class BrawlMode(GameMode):
     
     def update(self, clock):
         self.eason.update()
-        print self.eason.v_x
         self.background.update(0)
     
     def draw(self, screen):
