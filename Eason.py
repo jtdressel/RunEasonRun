@@ -295,7 +295,7 @@ class BrawlEason(Eason):
         self.anim_stand = Animation(animList, 10, True)
         animList = [self.images[10], self.images[27], self.images[28], self.images[29]]
         self.anim_punch = Animation(animList, 10, False)
-        self.anim_atk = []
+        self.anim_atk = [] #assign animation depending on attack
         self.direction = BrawlEason.RIGHT
         self.upperBound, self.lowerBound = up, lo
     
