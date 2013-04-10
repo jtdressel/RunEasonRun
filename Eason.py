@@ -322,7 +322,6 @@ class BrawlEason(Eason):
             return 
         else:
             self.anim_atk = self.anim_punch
-        print "attack!"
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk.play()
@@ -339,6 +338,11 @@ class BrawlEason(Eason):
     
     def isMoving(self):
         if self.v_x == 0 and self.v_y == 0:
+            return False
+        return True
+
+    def isAttack(self):
+        if self.status != BrawlEason.ATK:
             return False
         return True
     
@@ -379,7 +383,7 @@ class BrawlEason(Eason):
                 self.image = pygame.transform.flip(self.image, 1, 0)
             self.anim_punch.update( pygame.time.get_ticks() )
         
-        if not self.isMoving():
+        if not self.isMoving() or not self.isAttack():
             self.stand()
         else:
             if math.fabs(self.v_x) == v_w:
