@@ -309,6 +309,8 @@ class BrawlEason(Eason):
             self.v_y += vy
     
     def walk(self):
+        if self.status == BrawlEason.ATK:
+            return
         self.status = BrawlEason.WALK
         if not self.anim_walk.started():
             self.anim_walk.start()
@@ -347,6 +349,8 @@ class BrawlEason(Eason):
         return True
     
     def move(self):
+        if self.status == BrawlEason.ATK:
+            return
         t = 1
         s_x = self.v_x * t + self.a_x * t * t / 2
         s_y = self.v_y * t + self.a_y * t * t / 2
