@@ -35,7 +35,6 @@ class BrawlMode(GameMode):
             self.eason.setVelocity(None, vertical[event.key])
         if event.key == K_j:
         	self.eason.attack()
-        	# self.eason.setVelocity( -self.eason.v_x , -self.eason.v_y )
 
         # self.eason.v_x = 0
         # self.eason.v_y = 0
