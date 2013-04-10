@@ -378,7 +378,7 @@ class BrawlEason(Eason):
             self.anim_stand.update(pygame.time.get_ticks())
 
         if self.status == BrawlEason.ATK:
-            # self.setVelocity(-self.v_x, -self.v_y)
+
             self.image = self.anim_punch.image
             if self.anim_punch.done():
                 self.status = BrawlEason.STAND
