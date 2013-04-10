@@ -34,7 +34,7 @@ class BrawlMode(GameMode):
         if event.key in vertical:
             self.eason.setVelocity(None, vertical[event.key])
         if event.key == K_j:
-            self.eason.attack()
+        	self.eason.attack()
 
         # self.eason.v_x = 0
         # self.eason.v_y = 0
@@ -59,6 +59,7 @@ class BrawlMode(GameMode):
     
     def update(self, clock):
         self.eason.update()
+        print self.eason.v_x
         self.background.update(0)
     
     def draw(self, screen):

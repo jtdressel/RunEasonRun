@@ -75,11 +75,10 @@ class MenuMode(GameMode):
         if event.key == K_ESCAPE:
             self.quit()
         keys = pygame.key.get_pressed()
-        if self.status == MenuMode.IDLE:
-            if keys[K_UP] or keys[K_w] or keys[K_a]:
-                self.menu_choice = ((self.menu_choice - 1) % 4 + 4) % 4
-            if keys[K_DOWN] or keys[K_s] or keys[K_d]:
-                self.menu_choice = ((self.menu_choice + 1) % 4 + 4) % 4
+        if keys[K_UP] or keys[K_w] or keys[K_a]:
+            self.menu_choice = ((self.menu_choice - 1) % 4 + 4) % 4
+        if keys[K_DOWN] or keys[K_s] or keys[K_d]:
+            self.menu_choice = ((self.menu_choice + 1) % 4 + 4) % 4
         if keys[K_SPACE] or keys[K_RETURN]:
             if self.menu_choice == 3:
                 self.quit()
