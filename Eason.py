@@ -465,8 +465,10 @@ class BrawlEason(Eason):
             self.x = width - 40
         if self.y > self.lowerBound - 80:
             self.y = self.lowerBound - 80
+            self.gnd_y = self.lowerBound - 80
         if self.y < self.upperBound - 80 and not self.isFalling():
-            self.y = self.upperBound - 80
+            self.y = self.upperBound - 79
+            self.gnd_y = self.upperBound - 79
     
     def update(self):
         # Eason.update(self)
