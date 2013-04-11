@@ -51,10 +51,11 @@ class BrawlMode(GameMode):
             self.eason.setVelocity(None, vertical[event.key])
     
     def update(self, clock):
+    	self.baddy.aiMove((self.eason))
         self.eason.update()
         self.baddy.update()
         self.background.update(0)
-    
+
     def draw(self, screen):
         self.background.draw(screen)
         screen.blit(self.baddy.image, self.baddy.rect)

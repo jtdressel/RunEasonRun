@@ -24,7 +24,7 @@ class BadGuy(pygame.sprite.Sprite):
 		self.v_x, self.v_y = 0, 0
 		self.a_x, self.a_y = 0, 0
 		self.width, self.height = 80, 80
-		self.status = BadGuy.STAND
+		self.status = None 
 		
 		#-----------------------ANIMATIONS-------------------------------------
 		animList = [self.images[6], self.images[7], self.images[8], \
@@ -41,12 +41,9 @@ class BadGuy(pygame.sprite.Sprite):
 
 		self.direction = BadGuy.RIGHT
 		self.upperBound, self.lowerBound = up , lo
-		
-		self.stand()
 
 	def newBound(self, nu, nl):
 		self.upperBound, self.lowerBound = nu , nl
-
 	
 	def setVelocity(self, vx = None, vy = None):
 		if vx != None:
@@ -66,6 +63,8 @@ class BadGuy(pygame.sprite.Sprite):
 			self.direction = BadGuy.LEFT
 
 	def stand(self):
+		if self.status == BadGuy.STAND:
+			return
 		self.status = BadGuy.STAND
 		self.v_x, self.v_y = 0, 0
 		self.anim_stand.reset()
@@ -80,6 +79,26 @@ class BadGuy(pygame.sprite.Sprite):
 		if self.status != BadGuy.ATK:
 			return False
 		return True
+
+	def checkForTarget(self, target):
+		pass
+		#returns if target is near in terms of x and y directions
+
+
+	def aiMove(self, target):
+		#horizontal = [v_w, -v_w]
+		#vertical = [0.8, -0.8]\
+		v_x, v_y = None, None
+		if self.x < target.x:
+			v_x = v_w
+		if self.x > target.x:
+			v_x = -v_w
+		if self.y < target.y:
+			v_y = 0.5
+		if self.y > target.y:
+			v_y = -0.5
+
+		self.setVelocity(v_x, v_y)
 	
 	def move(self):
 		if self.status == BadGuy.ATK:
@@ -101,11 +120,12 @@ class BadGuy(pygame.sprite.Sprite):
 			self.y = self.upperBound - 80
 
 	def update(self):
+		#print self.status
 		if self.status == BadGuy.WALK:
-			self.image = self.anim_walk.image
+			self.image = self.anim_run.image
 			if self.direction == BadGuy.LEFT:
 				self.image = pygame.transform.flip(self.image, 1, 0)
-			self.anim_walk.update( pygame.time.get_ticks() )
+			self.anim_run.update( pygame.time.get_ticks() )
 
 		if self.status == BadGuy.STAND:
 			self.image = self.anim_stand.image
@@ -121,6 +141,19 @@ class BadGuy(pygame.sprite.Sprite):
 				self.image = pygame.transform.flip(self.image, 1, 0)
 			self.anim_punch.update( pygame.time.get_ticks() )
 
+		if not self.isMoving() and not self.isAttack():
+			self.stand()
+		else:
+			if math.fabs(self.v_x) == v_w:
+				self.walk()
+			if math.fabs(self.v_x) == v_r:
+				self.run()
+			if self.v_y:
+				if math.fabs(self.v_x) == v_r:
+					self.run()
+				else:
+					self.walk()
+		self.move()
 		self.rect.topleft = self.x, self.y
 
 
