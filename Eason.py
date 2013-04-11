@@ -14,7 +14,7 @@ from EsAnimation import *
 from EsSounds import *
 from EsTimer import *
 
-JMP_ACC = 0.3
+JMP_ACC = 0.2
 DRP_ACC = 3
 
 class Eason(pygame.sprite.Sprite):
@@ -287,17 +287,26 @@ class BrawlEason(Eason):
     RIGHT, LEFT = range(2)
     def __init__(self, pos, up, lo):
         Eason.__init__(self, pos)
+        self.images1 = loadSprites('eason1.png', -1, 80, 80)
         animList = [self.images[23], self.images[24], self.images[25], self.images[26], \
                     self.images[25], self.images[24]]
         self.anim_walk = Animation(animList, 10, True)
         animList = [self.images[36], self.images[37], self.images[38], \
                    self.images[18]]
         self.anim_stand = Animation(animList, 10, True)
-        animList = [self.images[10], self.images[27], self.images[28], self.images[29]]
-        self.anim_punch = Animation(animList, 10, False)
-        self.anim_atk = []
+        self.anim_punch = []
+        animList = [self.images[14], self.images[15], self.images[16]]
+        self.anim_punch.append(Animation(animList, 20, False))
+        animList = [self.images[10], self.images[11], self.images[12]]
+        self.anim_punch.append(Animation(animList, 20, False))
+        animList = [self.images1[13], self.images1[14], self.images1[15], self.images1[16], \
+                    self.images1[17], self.images1[18], self.images1[19], self.images1[28], self.images1[29]]
+        self.anim_heavy_attack = Animation(animList, 25, False)
         self.direction = BrawlEason.RIGHT
+        self.v_x = 0
         self.upperBound, self.lowerBound = up, lo
+        self.damage = 0
+        self.cd_atk = CDTimer(100)
     
     def newBound(self, nu, nl):
         self.upperBound, self.lowerBound = nu, nl
@@ -319,24 +328,42 @@ class BrawlEason(Eason):
         elif self.v_x < 0:
             self.direction = BrawlEason.LEFT
 
-    def attack(self):
-        if self.status == BrawlEason.ATK or self.status == BrawlEason.DEAD:
+    def light_attack(self):
+        if self.cd_atk.isStart() and not self.cd_atk.timeUp():
+            return 
+        if self.status == BrawlEason.DEAD or self.status == BrawlEason.ATK:
             return 
         else:
-            self.anim_atk = self.anim_punch
+            self.anim_atk = self.anim_punch[randint(0, 1)]
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk.play()
         self.atkDone = False
         self.status = BrawlEason.ATK
+        self.damage = 10
+        self.cd_atk.setTime(10)
+        
+    def heavy_attack(self):
+        if self.cd_atk.isStart() and not self.cd_atk.timeUp():
+            return 
+        if self.status == BrawlEason.DEAD or self.status == BrawlEason.ATK:
+            return
+        else:
+            self.anim_atk = self.anim_heavy_attack
+        self.anim_atk.reset()
+        self.anim_atk.start()
+        self.sound_atk.play()
+        self.status = BrawlEason.ATK
+        self.damage = 20
+        self.cd_atk.setTime(300)
 
     def stand(self):
         if self.status == BrawlEason.STAND:
             return 
         self.status = BrawlEason.STAND
-        self.v_x, self.v_y = 0, 0
         self.anim_stand.reset()
         self.anim_stand.start()
+        self.damage = 0
     
     def isMoving(self):
         if self.v_x == 0 and self.v_y == 0:
@@ -349,8 +376,10 @@ class BrawlEason(Eason):
         return True
     
     def move(self):
-        if self.status == BrawlEason.ATK:
+        '''
+        if self.isAttack():
             return
+            '''
         t = 1
         s_x = self.v_x * t + self.a_x * t * t / 2
         s_y = self.v_y * t + self.a_y * t * t / 2
@@ -382,13 +411,15 @@ class BrawlEason(Eason):
             self.anim_stand.update(pygame.time.get_ticks())
 
         if self.status == BrawlEason.ATK:
-
-            self.image = self.anim_punch.image
-            if self.anim_punch.done():
+            self.image = self.anim_atk.image
+            if self.anim_atk.done():
+                self.cd_atk.start()
+                for i in self.anim_punch:
+                    i.reset()
                 self.status = BrawlEason.STAND
             if self.direction == BrawlEason.LEFT:
                 self.image = pygame.transform.flip(self.image, 1, 0)
-            self.anim_punch.update( pygame.time.get_ticks() )
+            self.anim_atk.update( pygame.time.get_ticks())
         
         if not self.isMoving() and not self.isAttack():
             self.stand()
@@ -402,6 +433,7 @@ class BrawlEason(Eason):
                     self.run()
                 else:
                     self.walk()
+        
         self.move()
         self.rect.topleft = self.x, self.y
 

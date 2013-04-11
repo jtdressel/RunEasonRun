@@ -33,6 +33,7 @@ class Animation(pygame.sprite.Sprite):
         self._last_update = pygame.time.get_ticks()
         self._done = False
         self._frame = 0
+        self.image = self._images[self._frame]
         
     def finish(self):
         self._done = True

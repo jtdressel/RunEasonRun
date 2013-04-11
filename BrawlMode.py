@@ -34,21 +34,10 @@ class BrawlMode(GameMode):
         if event.key in vertical:
             self.eason.setVelocity(None, vertical[event.key])
         if event.key == K_j:
-        	self.eason.attack()
+            self.eason.light_attack()
+        if event.key == K_k:
+            self.eason.heavy_attack()
 
-        # self.eason.v_x = 0
-        # self.eason.v_y = 0
-        # speed = 1.5
-
-        # if event.key == K_a:
-        # 	self.eason.v_x -= speed
-        # if event.key == K_d:
-        # 	self.eason.v_x += speed
-        # if event.key == K_w:
-        # 	self.eason.v_y -= speed
-        # if event.key == K_s:
-        # 	self.eason.v_y += speed
-    
     def key_up(self, event):
         horizontal = {K_a: v_w, K_d: -v_w}
         vertical = {K_w: 0.8, K_s: -0.8}
@@ -59,27 +48,9 @@ class BrawlMode(GameMode):
     
     def update(self, clock):
         self.eason.update()
-        print self.eason.v_x
         self.background.update(0)
     
     def draw(self, screen):
         self.background.draw(screen)
         screen.blit(self.eason.image, self.eason.rect)
         pygame.display.flip()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-            

@@ -43,7 +43,7 @@ def main():
     modes.register_mode('menu_mode', MenuMode())
     modes.register_mode('brawl_mode', BrawlMode('street.png', 224, 385))
     ## program starts with shell menu
-    modes.switch_to_mode('menu_mode')
+    modes.switch_to_mode('brawl_mode')
     ## main loop
     while not modes.quitting():
         clock.tick(FPS)
