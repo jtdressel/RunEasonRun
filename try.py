@@ -16,10 +16,20 @@ while True:
             exit()
         if event.type == KEYDOWN:
             if event.key in move:
-                move[event.key] = 1
+                move[event.key] = .3
+            else:
+                keys = pygame.key.get_pressed()
+                if keys[K_j] and keys[K_k]:
+                    print "combo"
+                elif keys[K_j]:
+                    print "j"
+                elif keys[K_k]:
+                    print "k"
+            
         elif event.type == KEYUP:
             if event.key in move:
                 move[event.key] = 0
+        
             
     x -= move[K_LEFT]
     x += move[K_RIGHT]

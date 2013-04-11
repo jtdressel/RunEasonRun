@@ -14,7 +14,7 @@ from EsAnimation import *
 from EsSounds import *
 from EsTimer import *
 
-JMP_ACC = 0.2
+JMP_ACC = 0.3
 DRP_ACC = 3
 
 class Eason(pygame.sprite.Sprite):
@@ -63,7 +63,7 @@ class Eason(pygame.sprite.Sprite):
         self.anim_punch = Animation(animList, 40, False)
         animList = [self.images[5], self.images[6], self.images[7], \
                     self.images[8], self.images[9]]
-        self.anim_kick = Animation(animList, 40, False)
+        self.anim_kick = Animation(animList, 25, False)
         animList = [self.images[31], self.images[32], self.images[33], \
                     self.images[34]]
         self.anim_dead = Animation(animList, 30, False)
@@ -283,7 +283,7 @@ class Eason(pygame.sprite.Sprite):
         self.rect.topleft = self.x, self.y
         
 class BrawlEason(Eason):
-    WALK, RUN, JUMP, ATK, DEAD, HIT, STAND = range(7)
+    WALK, RUN, JUMP, ATK, DEAD, HIT, STAND, FIRE = range(8)
     RIGHT, LEFT = range(2)
     def __init__(self, pos, up, lo):
         Eason.__init__(self, pos)
@@ -302,11 +302,27 @@ class BrawlEason(Eason):
         animList = [self.images1[13], self.images1[14], self.images1[15], self.images1[16], \
                     self.images1[17], self.images1[18], self.images1[19], self.images1[28], self.images1[29]]
         self.anim_heavy_attack = Animation(animList, 25, False)
+        animList = [self.images1[20], self.images1[21], self.images1[21], self.images1[21], self.images1[21],\
+                     self.images1[22], self.images1[22], self.images1[22], self.images1[23]]
+        self.anim_jump_punch = Animation(animList, 30, False)
+        self.anim_fireball = []
+        animList = [self.images1[0], self.images1[1], self.images1[2], self.images1[3], \
+                    self.images1[4]]
+        self.anim_fireball.append(Animation(animList, 25, False))
+        animList = [self.images1[5], self.images1[6], self.images1[7], self.images1[8], \
+                    self.images1[9]]
+        self.anim_fireball.append(Animation(animList, 25, False))
+        animList = [self.images1[10], self.images1[11], self.images1[12]]
+        self.anim_fireball.append(Animation(animList, 25, False))
+        
         self.direction = BrawlEason.RIGHT
         self.v_x = 0
         self.upperBound, self.lowerBound = up, lo
         self.damage = 0
         self.cd_atk = CDTimer(100)
+        self.acc = 0
+        self.v = 0
+        self.gnd_y = self.y
     
     def newBound(self, nu, nl):
         self.upperBound, self.lowerBound = nu, nl
@@ -316,6 +332,21 @@ class BrawlEason(Eason):
             self.v_x += vx
         if vy != None:
             self.v_y += vy
+    
+    def jump(self):
+        if self.jmp_cnt > 1:
+            return 
+        self.jmp_cnt += 1
+        self.status = BrawlEason.JUMP
+        self.acc = JMP_ACC
+        self.v = -6
+        if self.jmp_cnt == 1:
+            self.anim_jmp.reset()
+            self.anim_jmp.start()
+            self.gnd_y = self.y
+        else:
+            self.anim_jmp2.reset()
+            self.anim_jmp2.start()
     
     def walk(self):
         if self.status == BrawlEason.ATK:
@@ -334,7 +365,10 @@ class BrawlEason(Eason):
         if self.status == BrawlEason.DEAD or self.status == BrawlEason.ATK:
             return 
         else:
-            self.anim_atk = self.anim_punch[randint(0, 1)]
+            if self.isFalling():
+                self.anim_atk = self.anim_jump_punch
+            else:
+                self.anim_atk = self.anim_punch[randint(0, 1)]
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk.play()
@@ -349,13 +383,29 @@ class BrawlEason(Eason):
         if self.status == BrawlEason.DEAD or self.status == BrawlEason.ATK:
             return
         else:
-            self.anim_atk = self.anim_heavy_attack
+            if self.isFalling():
+                self.anim_atk = self.anim_kick
+            else:
+                self.anim_atk = self.anim_heavy_attack
+            
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk.play()
         self.status = BrawlEason.ATK
         self.damage = 20
         self.cd_atk.setTime(300)
+    
+    def fireball(self):
+        if self.cd_atk.isStart() and not self.cd_atk.timeUp():
+            return
+        if self.status == BrawlEason.ATK:
+            return 
+        self.status = BrawlEason.ATK
+        self.anim_atk = self.anim_fireball[randint(0, 2)]
+        self.anim_atk.reset()
+        self.anim_atk.start()
+        self.damage = 0
+        self.cd_atk.setTime(500)
 
     def stand(self):
         if self.status == BrawlEason.STAND:
@@ -365,15 +415,33 @@ class BrawlEason(Eason):
         self.anim_stand.start()
         self.damage = 0
     
+    def isJumping(self):
+        if self.status == BrawlEason.JUMP:
+            return True
+        return False
+    
     def isMoving(self):
         if self.v_x == 0 and self.v_y == 0:
             return False
         return True
 
     def isAttack(self):
-        if self.status != BrawlEason.ATK:
+        if self.status != BrawlEason.ATK and self.status != BrawlEason.FIRE:
             return False
         return True
+    
+    def stepOn(self):
+        if self.gnd_y < self.y:
+            self.y = self.gnd_y
+            self.acc = 0
+            self.v = 0
+            self.jmp_cnt = 0
+    
+    def isFalling(self):
+        if not self.acc:
+            return False
+        return True
+            
     
     def move(self):
         '''
@@ -381,23 +449,39 @@ class BrawlEason(Eason):
             return
             '''
         t = 1
+        ver_dist = self.v * t + self.acc * t * t / 2
+        self.v = self.v + self.acc * t
         s_x = self.v_x * t + self.a_x * t * t / 2
         s_y = self.v_y * t + self.a_y * t * t / 2
         self.v_x = self.v_x + self.a_x * t
         self.v_y = self.v_y + self.a_y * t
         self.y += s_y
         self.x += s_x
+        self.gnd_y += s_y
+        self.y += ver_dist
         if self.x < -40:
             self.x = -40
         if self.x > width - 40:
             self.x = width - 40
         if self.y > self.lowerBound - 80:
             self.y = self.lowerBound - 80
-        if self.y < self.upperBound - 80:
+        if self.y < self.upperBound - 80 and not self.isFalling():
             self.y = self.upperBound - 80
     
     def update(self):
         # Eason.update(self)
+        ## ----------------------update animations------------------------
+        if self.status == BrawlEason.JUMP:
+            if self.jmp_cnt == 1:
+                self.image = self.anim_jmp.image
+                self.anim_jmp.update(pygame.time.get_ticks())
+            elif self.jmp_cnt == 2:
+                self.image = self.anim_jmp2.image
+                self.anim_jmp2.update(pygame.time.get_ticks())
+            if self.direction == BrawlEason.LEFT:
+                self.image = pygame.transform.flip(self.image, 1, 0)
+            
+        
         if self.status == BrawlEason.WALK:
             self.image = self.anim_walk.image
             if self.direction == BrawlEason.LEFT:
@@ -412,28 +496,23 @@ class BrawlEason(Eason):
 
         if self.status == BrawlEason.ATK:
             self.image = self.anim_atk.image
-            if self.anim_atk.done():
-                self.cd_atk.start()
-                for i in self.anim_punch:
-                    i.reset()
-                self.status = BrawlEason.STAND
             if self.direction == BrawlEason.LEFT:
                 self.image = pygame.transform.flip(self.image, 1, 0)
             self.anim_atk.update( pygame.time.get_ticks())
+            
+        ## ---------------------------------------------------------------
         
-        if not self.isMoving() and not self.isAttack():
+        if not self.isFalling() and not self.isAttack():
             self.stand()
-        else:
-            if math.fabs(self.v_x) == v_w:
+        if self.isMoving() and not self.isAttack():
+            if not self.isFalling():
                 self.walk()
-            if math.fabs(self.v_x) == v_r:
-                self.run()
-            if self.v_y:
-                if math.fabs(self.v_x) == v_r:
-                    self.run()
-                else:
-                    self.walk()
-        
+        if self.isAttack() and self.anim_atk.done():
+            if not self.isFalling():
+                self.stand()
+            self.cd_atk.start()
+            
+        self.stepOn()
         self.move()
         self.rect.topleft = self.x, self.y
 
