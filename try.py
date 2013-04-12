@@ -4,12 +4,15 @@ from sys import exit
  
 pygame.init()
 screen = pygame.display.set_mode((640, 480), 0, 32)
-background = pygame.Surface((20, 20)).convert()
-background.fill((255, 0, 0))
+A = pygame.Surface((20, 20)).convert()
+A.fill((255, 0, 0))
+rect = A.get_rect()
  
 x, y = 0, 0
 move = {K_LEFT: 0, K_RIGHT: 0, K_UP: 0, K_DOWN: 0}
- 
+
+hitbox = None
+
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -19,12 +22,8 @@ while True:
                 move[event.key] = .3
             else:
                 keys = pygame.key.get_pressed()
-                if keys[K_j] and keys[K_k]:
-                    print "combo"
-                elif keys[K_j]:
-                    print "j"
-                elif keys[K_k]:
-                    print "k"
+                if keys[K_j]:
+                    A.fill((4, 4, 100))
             
         elif event.type == KEYUP:
             if event.key in move:
@@ -35,6 +34,10 @@ while True:
     x += move[K_RIGHT]
     y -= move[K_UP]
     y += move[K_DOWN]
+    
+    
+    rect.topleft = x, y
+    
     screen.fill((255,255,255))
-    screen.blit(background, (x,y))
+    screen.blit(A, rect)
     pygame.display.update()

@@ -325,6 +325,10 @@ class BrawlEason(Eason):
         self.acc = 0
         self.v = 0
         self.gnd_y = self.y
+        self.kill_cnt = 0
+    
+    def isLeft(self):
+        return self.direction == BrawlEason.LEFT
     
     def newBound(self, nu, nl):
         self.upperBound, self.lowerBound = nu, nl
@@ -334,6 +338,9 @@ class BrawlEason(Eason):
             self.v_x += vx
         if vy != None:
             self.v_y += vy
+    
+    def killUp(self):
+        self.kill_cnt += 1
     
     def jump(self):
         if self.jmp_cnt > 1:
@@ -376,7 +383,7 @@ class BrawlEason(Eason):
         self.sound_atk[randint(0, 1)].play()
         self.atkDone = False
         self.status = BrawlEason.ATK
-        self.damage = 10
+        self.damage = 10 + randint(-4, 4) + self.level
         self.cd_atk.setTime(1)
         
     def heavy_attack(self):
@@ -394,8 +401,8 @@ class BrawlEason(Eason):
         self.anim_atk.start()
         self.sound_atk[randint(0, 1)].play()
         self.status = BrawlEason.ATK
-        self.damage = 20
-        self.cd_atk.setTime(300)
+        self.damage = (10 + randint(-4, 4) + self.level) * 2
+        self.cd_atk.setTime(50)
     
     def fireball(self):
         if self.cd_atk.isStart() and not self.cd_atk.timeUp():
@@ -443,6 +450,55 @@ class BrawlEason(Eason):
         if not self.acc:
             return False
         return True
+    
+    def getHitBox(self):
+        if self.status != BrawlEason.ATK:
+            return None
+        hitBox = None
+        ## -------------hitBox of light attacks-----------------
+        if self.anim_atk.image == self.images[11] or \
+        self.anim_atk.image == self.images[12] or \
+        self.anim_atk.image == self.images[15] or \
+        self.anim_atk.image == self.images[16]:
+            x = 50
+            y = self.y + 40
+            if self.direction == BrawlEason.LEFT:
+                x = 80 - x - 30
+            x += self.x
+            hitBox = pygame.Rect(x, y, 30, 15)
+        
+        ## ------------hitBox of kicks------------------
+        if self.anim_atk.image == self.images[8] or\
+        self.anim_atk.image == self.images[9]:
+            x = 40
+            y = self.y + 40
+            if self.direction == BrawlEason.LEFT:
+                x = 80 - x - 30
+            x += self.x
+            hitBox = pygame.Rect(x, y, 30, 16)
+            
+        ## -------------hitBox of heavy attacks-------------
+        if self.anim_atk.image == self.images1[14] or \
+        self.anim_atk.image == self.images1[16] or self.anim_atk.image == self.images1[17] or \
+        self.anim_atk.image == self.images1[19] or self.anim_atk.image == self.images1[27] or\
+        self.anim_atk.image == self.images1[26]:
+            x = 40
+            y = self.y + 40
+            if self.direction == BrawlEason.LEFT:
+                x = 80 - x - 36
+            x += self.x
+            hitBox = pygame.Rect(x, y, 36, 16)
+        
+        ## -------------hitBox of jump attacks--------------
+        if self.anim_atk.image == self.images1[22] or self.anim_atk.image == self.images1[23]:
+            x = 30
+            y = self.y + 50
+            if self.direction == BrawlEason.LEFT:
+                x = 80 - x - 25
+            x += self.x
+            hitBox = pygame.Rect(x, y, 25, 20)
+        
+        return hitBox
             
     
     def move(self):
@@ -515,8 +571,6 @@ class BrawlEason(Eason):
         self.stepOn()
         self.move()
         self.rect.topleft = self.x, self.y
-
-
 
 class SimpleEason():
     STAND, BEAT, RUN, FLY = range(4)
