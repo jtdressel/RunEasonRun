@@ -4,7 +4,7 @@
 	"fps": 60,
 	"pos": [100, 180],
 	"bgm_volume": 0.2,
-	"sound_volume": 0.2,
+	"sound_volume": 0.3,
 	"difficulty": 0.1,
 	"hit_time": 10,
 	"v_walk": 1.5,

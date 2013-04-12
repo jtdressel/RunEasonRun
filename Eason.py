@@ -303,11 +303,12 @@ class BrawlEason(Eason):
         animList = [self.images[10], self.images[11], self.images[12]]
         self.anim_punch.append(Animation(animList, 20, False))
         animList = [self.images1[13], self.images1[14], self.images1[15], self.images1[16], \
-                    self.images1[17], self.images1[18], self.images1[19], self.images1[28], self.images1[29]]
-        self.anim_heavy_attack = Animation(animList, 25, False)
+                    self.images1[17], self.images1[18], self.images1[19], self.images1[29], \
+                    self.images1[28], self.images1[27], self.images1[26], self.images1[25], self.images1[24]]
+        self.anim_heavy_attack = Animation(animList, 35, False)
         animList = [self.images1[20], self.images1[21], self.images1[21], self.images1[21], self.images1[21],\
                      self.images1[22], self.images1[22], self.images1[22], self.images1[23]]
-        self.anim_jump_punch = Animation(animList, 30, False)
+        self.anim_jump_punch = Animation(animList, 50, False)
         self.anim_fireball = []
         animList = [self.images1[0], self.images1[1], self.images1[2], self.images1[3], \
                     self.images1[4], self.images1[0]]
@@ -376,7 +377,7 @@ class BrawlEason(Eason):
         self.atkDone = False
         self.status = BrawlEason.ATK
         self.damage = 10
-        self.cd_atk.setTime(10)
+        self.cd_atk.setTime(1)
         
     def heavy_attack(self):
         if self.cd_atk.isStart() and not self.cd_atk.timeUp():
@@ -427,7 +428,7 @@ class BrawlEason(Eason):
         return True
 
     def isAttack(self):
-        if self.status != BrawlEason.ATK and self.status != BrawlEason.FIRE:
+        if self.status != BrawlEason.ATK:
             return False
         return True
     
@@ -445,10 +446,6 @@ class BrawlEason(Eason):
             
     
     def move(self):
-        '''
-        if self.isAttack():
-            return
-            '''
         t = 1
         ver_dist = self.v * t + self.acc * t * t / 2
         self.v = self.v + self.acc * t
