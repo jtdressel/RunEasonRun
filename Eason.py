@@ -25,12 +25,15 @@ class Eason(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.images = loadSprites('eason0.png', -1, 80, 80)
         self.sound_jmp = load_sound('jump.wav')
-        self.sound_atk = load_sound('attack.wav')
+        self.sound_atk = []
+        self.sound_atk.append(load_sound('attack0.wav'))
+        self.sound_atk.append(load_sound('attack1.wav'))
         self.sound_gameover = load_sound('gameover.wav')
         self.sound_levelup = load_sound('levelup.wav')
         self.sound_cd = load_sound('cd.wav')
         self.sound_jmp.set_volume(sound_volume)
-        self.sound_atk.set_volume(sound_volume)
+        for i in self.sound_atk:
+            i.set_volume(sound_volume)
         self.sound_gameover.set_volume(sound_volume)
         self.sound_cd.set_volume(sound_volume)
         self.sound_levelup.set_volume(sound_volume)
@@ -221,7 +224,7 @@ class Eason(pygame.sprite.Sprite):
             self.kick = False
         self.anim_atk.reset()
         self.anim_atk.start()
-        self.sound_atk.play()
+        self.sound_atk[randint(0, 1)].play()
         self.CDtimer.start()
         self.atkDone = False
         self.status = Eason.ATK
@@ -307,12 +310,10 @@ class BrawlEason(Eason):
         self.anim_jump_punch = Animation(animList, 30, False)
         self.anim_fireball = []
         animList = [self.images1[0], self.images1[1], self.images1[2], self.images1[3], \
-                    self.images1[4]]
+                    self.images1[4], self.images1[0]]
         self.anim_fireball.append(Animation(animList, 25, False))
         animList = [self.images1[5], self.images1[6], self.images1[7], self.images1[8], \
-                    self.images1[9]]
-        self.anim_fireball.append(Animation(animList, 25, False))
-        animList = [self.images1[10], self.images1[11], self.images1[12]]
+                    self.images1[9], self.images1[0]]
         self.anim_fireball.append(Animation(animList, 25, False))
         
         self.direction = BrawlEason.RIGHT
@@ -371,7 +372,7 @@ class BrawlEason(Eason):
                 self.anim_atk = self.anim_punch[randint(0, 1)]
         self.anim_atk.reset()
         self.anim_atk.start()
-        self.sound_atk.play()
+        self.sound_atk[randint(0, 1)].play()
         self.atkDone = False
         self.status = BrawlEason.ATK
         self.damage = 10
@@ -390,7 +391,7 @@ class BrawlEason(Eason):
             
         self.anim_atk.reset()
         self.anim_atk.start()
-        self.sound_atk.play()
+        self.sound_atk[randint(0, 1)].play()
         self.status = BrawlEason.ATK
         self.damage = 20
         self.cd_atk.setTime(300)
@@ -398,14 +399,14 @@ class BrawlEason(Eason):
     def fireball(self):
         if self.cd_atk.isStart() and not self.cd_atk.timeUp():
             return
-        if self.status == BrawlEason.ATK:
+        if self.status == BrawlEason.ATK or self.isFalling():
             return 
         self.status = BrawlEason.ATK
-        self.anim_atk = self.anim_fireball[randint(0, 2)]
+        self.anim_atk = self.anim_fireball[randint(0, 1)]
         self.anim_atk.reset()
         self.anim_atk.start()
         self.damage = 0
-        self.cd_atk.setTime(500)
+        self.cd_atk.setTime(0)
 
     def stand(self):
         if self.status == BrawlEason.STAND:
@@ -465,7 +466,7 @@ class BrawlEason(Eason):
             self.x = width - 40
         if self.y > self.lowerBound - 80:
             self.y = self.lowerBound - 80
-            self.gnd_y = self.lowerBound - 80
+            self.gnd_y = self.lowerBound - 81
         if self.y < self.upperBound - 80 and not self.isFalling():
             self.y = self.upperBound - 79
             self.gnd_y = self.upperBound - 79

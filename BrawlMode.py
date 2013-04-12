@@ -9,6 +9,7 @@ from EsAnimation import *
 from EsSounds import *
 from Eason import *
 from Stupid import *
+from BadGuy import *
 from Background import *
 
 class BrawlMode(GameMode):
@@ -17,12 +18,23 @@ class BrawlMode(GameMode):
         self.upper_bound, self.lower_bound = upper, lower
         self.eason = BrawlEason(pos, upper, lower)
         self.eason.stand()
+
+        #badguy1
+        #self.baddy = BadGuy(pos, upper-10, lower-10)
+        #self.baddy.stand()
         
     def newBound(self, nu, nl):
         self.eason.newBound(nu, nl)
     
     def enter(self):
         self.eason.update()
+        #self.baddy.update()
+        pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "battle_bgm.ogg"))
+        pygame.mixer.music.set_volume(bgm_volume)
+        pygame.mixer.music.play(-1)
+    
+    def exit(self):
+        pygame.mixer.music.stop()
     
     def key_down(self, event):
         if event.key == K_ESCAPE:
@@ -33,8 +45,9 @@ class BrawlMode(GameMode):
             self.eason.setVelocity(horizontal[event.key], None)
         if event.key in vertical:
             self.eason.setVelocity(None, vertical[event.key])
+
         keys = pygame.key.get_pressed()
-        if keys[K_j] and keys[K_k]:
+        if keys[K_l]:
             self.eason.fireball()
         elif keys[K_j]:
             self.eason.light_attack()
@@ -52,10 +65,13 @@ class BrawlMode(GameMode):
             self.eason.setVelocity(None, vertical[event.key])
     
     def update(self, clock):
+        #self.baddy.aiMove((self.eason))
         self.eason.update()
+        #self.baddy.update()
         self.background.update(0)
-    
+
     def draw(self, screen):
         self.background.draw(screen)
+        #screen.blit(self.baddy.image, self.baddy.rect)
         screen.blit(self.eason.image, self.eason.rect)
         pygame.display.flip()
