@@ -13,6 +13,7 @@ from root import *
 from EsAnimation import *
 from EsSounds import *
 from EsTimer import *
+from Fireball import *
 
 JMP_ACC = 0.3
 DRP_ACC = 3
@@ -286,7 +287,7 @@ class Eason(pygame.sprite.Sprite):
         self.rect.topleft = self.x, self.y
         
 class BrawlEason(Eason):
-    WALK, RUN, JUMP, ATK, DEAD, HIT, STAND, FIRE = range(8)
+    WALK, JUMP, ATK, DEAD, HIT, STAND = range(6)
     RIGHT, LEFT = range(2)
     def __init__(self, pos, up, lo):
         Eason.__init__(self, pos)
@@ -326,6 +327,10 @@ class BrawlEason(Eason):
         self.v = 0
         self.gnd_y = self.y
         self.kill_cnt = 0
+        self.max_HP = 100
+        self.max_mana = 100
+        self.HP = 100
+        self.mana = 100
     
     def isLeft(self):
         return self.direction == BrawlEason.LEFT
@@ -341,6 +346,26 @@ class BrawlEason(Eason):
     
     def killUp(self):
         self.kill_cnt += 1
+    
+    def expUp(self):
+        Eason.expUp(self)
+        self.killUp()
+    
+    def levelUp(self):
+        self.level += 1
+        self.sound_levelup.play()
+        self.max_HP += 50
+        self.max_mana += 20
+        self.HP = self.max_HP
+        self.mana = self.max_mana
+    
+    def setLevel(self, lv):
+        self.level = lv
+        self.max_HP = 100 + 50 * (lv - 1)
+        self.max_mana = 100 + 20 * (lv - 1)
+        self.HP = self.max_HP
+        self.mana = self.max_mana
+        self.exp = 0
     
     def jump(self):
         if self.jmp_cnt > 1:
@@ -402,19 +427,33 @@ class BrawlEason(Eason):
         self.sound_atk[randint(0, 1)].play()
         self.status = BrawlEason.ATK
         self.damage = (10 + randint(-4, 4) + self.level) * 2
-        self.cd_atk.setTime(50)
+        self.cd_atk.setTime(100)
     
     def fireball(self):
+        fb = None
         if self.cd_atk.isStart() and not self.cd_atk.timeUp():
-            return
+            return fb
         if self.status == BrawlEason.ATK or self.isFalling():
-            return 
+            return fb
+        if self.mana < 20:
+            return fb
         self.status = BrawlEason.ATK
         self.anim_atk = self.anim_fireball[randint(0, 1)]
         self.anim_atk.reset()
         self.anim_atk.start()
         self.damage = 0
         self.cd_atk.setTime(0)
+        self.mana -= 20
+        if self.isLeft():
+            fb = Fireball((self.x - 35, self.y + 5), \
+                         Fireball.LEFT, self.fireballDamage())
+        else:
+            fb = Fireball((self.x + 35, self.y + 5), \
+                         Fireball.RIGHT, self.fireballDamage())
+        return fb
+    
+    def fireballDamage(self):
+        return 50 + randint(-10, 10) + self.level * 2
 
     def stand(self):
         if self.status == BrawlEason.STAND:
@@ -524,6 +563,12 @@ class BrawlEason(Eason):
             self.y = self.upperBound - 79
             self.gnd_y = self.upperBound - 79
     
+    def restore(self):
+        if self.HP < self.max_HP:
+            self.HP += 0.01
+        if self.mana < self.max_mana:
+            self.mana += 0.05
+    
     def update(self):
         # Eason.update(self)
         ## ----------------------update animations------------------------
@@ -570,6 +615,7 @@ class BrawlEason(Eason):
             
         self.stepOn()
         self.move()
+        self.restore()
         self.rect.topleft = self.x, self.y
 
 class SimpleEason():

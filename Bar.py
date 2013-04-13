@@ -49,3 +49,54 @@ class Bar():
             dgt = Bar.digits[x]
             screen.blit(dgt, (51 + 26 * i, 4))
         screen.blit(Bar.M, (55 + len(strDist) * 26, 4))
+
+class statusBar():
+    def __init__(self, name, pos):
+        self.case = loadImage('bar.png', -1)
+        self.bar = loadImage(name, None)
+        self.rect_bar = Rect(0, 0, 200, 15)
+        self.width = 200
+        self.x, self.y = self.pos = pos
+    
+    def update(self, frac):
+        self.width = 2.5 + 200 * frac
+        self.rect_bar.width = self.width
+        
+    def draw(self, screen):
+        screen.blit(self.case, self.pos)
+        screen.blit(self.bar, self.pos, self.rect_bar)
+
+class BrawlBar():
+    digits = []
+    def __init__(self):
+        BrawlBar.digits = loadSprites('digits.png', -1, 26, 42)
+        level = loadSprites('level.png', -1, 88, 42)
+        self.img_lv = level[0]
+        self.HP = statusBar('hp.png', (10, 20))
+        self.mana = statusBar('mana.png', (10, 40))
+        self.exp = statusBar('exp.png', (10, 60))
+        self.strKill = None
+    
+    def update(self, lv, hp_frac, mana_frac, exp_frac, kills = None):
+        self.strLv = str(lv)
+        if kills != None:
+            self.strKill = str(kills)
+        self.mana.update(mana_frac)
+        self.HP.update(hp_frac)
+        self.exp.update(exp_frac)
+    
+    def draw(self, screen):
+        for i in range(len(self.strLv)):
+            x = int(self.strLv[i])
+            dgt = BrawlBar.digits[x]
+            screen.blit(dgt, (405 + 88 + 26 * i, 4))
+        if self.strKill != None:
+            for i in range(len(self.strKill)):
+                x = int(self.strKill[i])
+                dgt = BrawlBar.digits[x]
+                screen.blit(dgt, (405 + 88 + 26 * i, 45))
+        screen.blit(self.img_lv, (400, 4))
+        self.HP.draw(screen)
+        self.mana.draw(screen)
+        self.exp.draw(screen)
+

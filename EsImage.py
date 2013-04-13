@@ -36,10 +36,11 @@ def loadSprites(name, transprt, width, height):
     return images
 
 def loadImage(name, transprt):
+    fullname = os.path.join(kSrcDir, dirImg, name)
     try:
-        image = pygame.image.load(name)
+        image = pygame.image.load(fullname)
     except pygame.error, message:
-        print "Image doesn't exist: ", name
+        print "Image doesn't exist: ", fullname
         raise SystemExit, message
     image = image.convert_alpha()
     if transprt != None:

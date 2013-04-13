@@ -20,13 +20,27 @@ class Fireball(pygame.sprite.Sprite):
         anim = [self.images[1], self.images[2], self.images[3], self.images[2]]
         self.anim_fly = Animation(anim, 15, True)
         anim = [self.images[4], self.images[5], self.images[6], self.images[7]]
-        self.anim_explode = Animation(anim, 30, False)
+        self.anim_explode = Animation(anim, 50, False)
         self.status = Fireball.START
         self.v = 7
         self.damage = dmg
         if self.direction == Fireball.LEFT:
             self.v = -self.v
         self.anim_start.start()
+    
+    def getHitBox(self):
+        if self.status == Fireball.FLY or self.status == Fireball.START:
+            x, y = 16, 21
+            w, h = 43, 28
+            if self.direction == Fireball.LEFT:
+                x = 80 - x - w
+            x += self.x
+            y += self.y
+        if self.status == Fireball.EXPLODE:
+            x, y = self.x - 40, self.y - 40
+            w, h = 160, 160
+        hitBox = pygame.Rect(x, y, w, h)
+        return hitBox
     
     def move(self):
         self.x += self.v

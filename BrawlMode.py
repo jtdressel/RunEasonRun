@@ -12,6 +12,7 @@ from Stupid import *
 from BadGuy import *
 from Background import *
 from Fireball import *
+from Bar import *
 
 class BrawlMode(GameMode):
     def __init__(self, name, upper, lower):
@@ -19,7 +20,8 @@ class BrawlMode(GameMode):
         self.upper_bound, self.lower_bound = upper, lower
         self.eason = BrawlEason(pos, upper, lower)
         self.eason.stand()
-        self.fireball = None
+        self.fireball = []
+        self.bar = BrawlBar()
 
         #badguy1
         #self.baddy = BadGuy(pos, upper-10, lower-10)
@@ -50,21 +52,21 @@ class BrawlMode(GameMode):
 
         keys = pygame.key.get_pressed()
         if keys[K_l]:
-            self.eason.fireball()
-            if self.eason.isLeft():
-                self.fireball = Fireball((self.eason.x - 35, self.eason.y + 5), \
-                                         Fireball.LEFT, self.eason.damage)
-            else:
-                self.fireball = Fireball((self.eason.x + 35, self.eason.y + 5), \
-                                         Fireball.RIGHT, self.eason.damage)
+            f = self.eason.fireball()
+            if f != None:
+                self.fireball.append(f)
         elif keys[K_j]:
             self.eason.light_attack()
         elif keys[K_k]:
             self.eason.heavy_attack()
         if keys[K_SPACE]:
             self.eason.jump()
+        if keys[K_u]:
+            self.eason.levelUp()
+        if keys[K_i]:
+            self.eason.setLevel(1)
         if keys[K_o]:
-            self.fireball.explode()
+            self.eason.expUp()
 
     def key_up(self, event):
         horizontal = {K_a: v_w, K_d: -v_w}
@@ -78,11 +80,14 @@ class BrawlMode(GameMode):
         #self.baddy.aiMove((self.eason))
         self.eason.update()
         #self.baddy.update()
-        self.r = self.eason.getHitBox()
-        if self.fireball != None:
-            self.fireball.update()
-            if self.fireball.outOfSight() or self.fireball.exploded():
-                self.fireball = None
+        hp = self.eason.HP / self.eason.max_HP
+        mana = self.eason.mana / self.eason.max_mana
+        exp = self.eason.exp / (self.eason.level * difficulty)
+        self.bar.update(self.eason.level, hp, mana, exp, self.eason.kill_cnt)
+        for i in self.fireball:
+            i.update()
+            if i.outOfSight() or i.exploded():
+                self.fireball.pop(self.fireball.index(i))
         self.background.update(0)
         
 
@@ -90,8 +95,7 @@ class BrawlMode(GameMode):
         self.background.draw(screen)
         #screen.blit(self.baddy.image, self.baddy.rect)
         screen.blit(self.eason.image, self.eason.rect)
-        if self.r != None:
-            pygame.draw.rect(screen, (255, 255, 255), self.r)
-        if self.fireball != None:
-            screen.blit(self.fireball.image, self.fireball.rect)
+        self.bar.draw(screen)
+        for i in self.fireball:
+            screen.blit(i.image, i.rect)
         pygame.display.flip()
