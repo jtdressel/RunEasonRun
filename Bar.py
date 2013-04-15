@@ -71,7 +71,9 @@ class BrawlBar():
     def __init__(self):
         BrawlBar.digits = loadSprites('digits.png', -1, 26, 42)
         level = loadSprites('level.png', -1, 88, 42)
+        kill = loadSprites('kill.png', -1, 88, 42)
         self.img_lv = level[0]
+        self.img_kill = kill[0]
         self.HP = statusBar('hp.png', (10, 20))
         self.mana = statusBar('mana.png', (10, 40))
         self.exp = statusBar('exp.png', (10, 60))
@@ -96,6 +98,7 @@ class BrawlBar():
                 dgt = BrawlBar.digits[x]
                 screen.blit(dgt, (405 + 88 + 26 * i, 45))
         screen.blit(self.img_lv, (400, 4))
+        screen.blit(self.img_kill, (400, 45))
         self.HP.draw(screen)
         self.mana.draw(screen)
         self.exp.draw(screen)

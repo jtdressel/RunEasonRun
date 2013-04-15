@@ -14,6 +14,8 @@ class Fireball(pygame.sprite.Sprite):
         self.x, self.y = self.pos = pos
         self.direction = dir
         self.images = loadSprites('fireball.png', -1, 80, 80)
+        self.sound_explode = load_sound('explode.wav')
+        self.sound_explode.set_volume(sound_volume)
         self.rect = self.images[0].get_rect()
         anim = [self.images[0]]
         self.anim_start = Animation(anim, 10, False)
@@ -63,10 +65,14 @@ class Fireball(pygame.sprite.Sprite):
         return self.anim_explode.done()
     
     def explode(self):
+        if self.status == Fireball.EXPLODE:
+            return 
         self.v = 0
         self.status = Fireball.EXPLODE
         self.anim_explode.reset()
         self.anim_explode.start()
+        self.sound_explode.play()
+        self.damage /= 2
     
     def update(self):
         if self.status == Fireball.START:
@@ -89,5 +95,6 @@ class Fireball(pygame.sprite.Sprite):
         self.move()
         self.rect.topleft = self.x, self.y
         
-        
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
             
