@@ -287,6 +287,7 @@ class Eason(pygame.sprite.Sprite):
         self.move()
         self.rect.topleft = self.x, self.y
         
+
 class BrawlEason(Eason):
     WALK, RUN, JUMP, ATK, DEAD, BEATEN, STAND, FFUCKED, BFUCKED = range(9)
     RIGHT, LEFT = range(2)

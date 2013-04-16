@@ -160,7 +160,6 @@ class SpeedMode(GameMode):
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
         self.bar.update(self.eason.level, self.eason.v_x / 3 )
-    
     ## draw elements onto the given screen
     def draw(self, screen):
         self.background.draw(screen)

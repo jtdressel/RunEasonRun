@@ -13,13 +13,14 @@ from root import *
 from EsAnimation import *
 from EsSounds import *
 from EsTimer import *
-
+from random import choice
 class Stupid(pygame.sprite.Sprite):
     STAND, ATK, DEAD = range(3)
     def __init__(self, pos):
         #-----------------------INITIALIZATION---------------------------------
         pygame.sprite.Sprite.__init__(self)
-        self.images = loadSprites('0.png', -1, 80, 80)
+        color_choices = ['0_blue_bandana.png','0_green_bandana.png','0_orange_bandana.png','0_red_bandana.png']
+        self.images = loadSprites(choice(color_choices), -1, 80, 80)
         self.rect = self.images[0].get_rect()
         
         #-----------------------ATTRIBUTES-------------------------------------
