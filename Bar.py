@@ -20,7 +20,9 @@ class Bar():
         self.dist = 0
         Bar.digits = loadSprites('digits.png', -1, 26, 42)
         m = loadSprites('M.png', -1, 32, 42)
+        c = loadSprites('C.png', -1, 30, 37)
         Bar.M = m[0]
+        Bar.C = c[0]
         level = loadSprites('level.png', -1, 88, 42)
         Bar.img_lv = level[0]
         self.setTheme(theme)
@@ -35,7 +37,15 @@ class Bar():
         self.dist += dist
         self.dist = int(self.dist)
         self.strLv = str(lv)
-    
+    def update(self, lv, dist, cd):
+        self.dist += dist
+        self.dist = int(self.dist)
+        self.strLv = str(lv)
+        self.update_cooldown(cd)
+    # Display the letter 'c' while cooldown is active
+    def update_cooldown(self, cd):
+        if(cd):
+            self.image.blit(Bar.C, (255, 4)) 
     def draw(self, screen):
         for i in range(len(self.strLv)):
             x = int(self.strLv[i])
