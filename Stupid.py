@@ -19,7 +19,7 @@ class Stupid(pygame.sprite.Sprite):
     def __init__(self, pos):
         #-----------------------INITIALIZATION---------------------------------
         pygame.sprite.Sprite.__init__(self)
-	color_choices = ['0_blue_bandana.png','0_green_bandana.png','0_orange_bandana.png','0_red_bandana.png']
+        color_choices = ['0_blue_bandana.png','0_green_bandana.png','0_orange_bandana.png','0_red_bandana.png']
         self.images = loadSprites(choice(color_choices), -1, 80, 80)
         self.rect = self.images[0].get_rect()
         

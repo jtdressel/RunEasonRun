@@ -13,7 +13,7 @@ from Eason import *
 from Stupid import *
 
 class MenuMode(GameMode):
-    background = createBlankImage(size, False)
+    background = createBlankImage(size, False, (200, 200, 255))
     IDLE, STARTING = range(2)
     attack_sounds = []
     modes = ['start_mode', 'speed_mode', 'brawl_mode']
@@ -75,10 +75,11 @@ class MenuMode(GameMode):
         if event.key == K_ESCAPE:
             self.quit()
         keys = pygame.key.get_pressed()
-        if keys[K_UP] or keys[K_w] or keys[K_a]:
-            self.menu_choice = ((self.menu_choice - 1) % 4 + 4) % 4
-        if keys[K_DOWN] or keys[K_s] or keys[K_d]:
-            self.menu_choice = ((self.menu_choice + 1) % 4 + 4) % 4
+        if self.status == MenuMode.IDLE:
+            if keys[K_UP] or keys[K_w] or keys[K_a]:
+                self.menu_choice = ((self.menu_choice - 1) % 4 + 4) % 4
+            if keys[K_DOWN] or keys[K_s] or keys[K_d]:
+                self.menu_choice = ((self.menu_choice + 1) % 4 + 4) % 4
         if keys[K_SPACE] or keys[K_RETURN]:
             if self.menu_choice == 3:
                 self.quit()

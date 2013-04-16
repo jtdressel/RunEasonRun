@@ -41,9 +41,9 @@ def main():
     modes.register_mode('start_mode', StartingMode())
     modes.register_mode('speed_mode', SpeedMode())
     modes.register_mode('menu_mode', MenuMode())
-    modes.register_mode('brawl_mode', BrawlMode())
+    modes.register_mode('brawl_mode', BrawlMode('street.png', 224, 385))
     ## program starts with shell menu
-    modes.switch_to_mode('menu_mode')
+    modes.switch_to_mode('brawl_mode')
     ## main loop
     while not modes.quitting():
         clock.tick(FPS)
@@ -51,8 +51,10 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 return
-            elif event.type == KEYDOWN:
+            if event.type == KEYDOWN:
                 modes.current_mode.key_down(event)
+            elif event.type == KEYUP:
+                modes.current_mode.key_up(event)
         ## update and then draw
         modes.current_mode.update(clock)
         modes.current_mode.draw(screen)

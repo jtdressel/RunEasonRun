@@ -7,8 +7,10 @@ Functions for processing images
 '''
 from root import *
 
-def createBlankImage((width, height), transprt = True):
+def createBlankImage((width, height), transprt = True, fillColor = None):
     image = pygame.Surface((width, height))
+    if fillColor != None:
+        image.fill(fillColor)
     if transprt:
         image.set_colorkey(image.get_at((0, 0)), pygame.RLEACCEL)
     return image
@@ -34,10 +36,11 @@ def loadSprites(name, transprt, width, height):
     return images
 
 def loadImage(name, transprt):
+    fullname = os.path.join(kSrcDir, dirImg, name)
     try:
-        image = pygame.image.load(name)
+        image = pygame.image.load(fullname)
     except pygame.error, message:
-        print "Image doesn't exist: ", name
+        print "Image doesn't exist: ", fullname
         raise SystemExit, message
     image = image.convert_alpha()
     if transprt != None:

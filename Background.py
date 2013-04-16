@@ -15,9 +15,8 @@ from EsImage import *
 
 class Background():
     def __init__(self, name):
-        fullname = os.path.join(kSrcDir, dirImg, name)
         self.images = [0, 0]
-        self.images[0] = loadImage(fullname, None)
+        self.images[0] = loadImage(name, None)
         self.images[1] = self.images[0]
         self.width = self.images[0].get_width()
         self.height = self.images[0].get_height()
