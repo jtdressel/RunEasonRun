@@ -23,7 +23,7 @@ class EsVector(object):
     def reset(self, x, y):
         self.x, self.y = x, y 
 
-def dist(p1, p2):
-    partA = (p1.x - p2.x) ** 2
-    partB = (p1.y - p2.y) ** 2
+def dist((x1, y1), (x2, y2)):
+    partA = (x1 - x2) ** 2
+    partB = (y1 - y2) ** 2
     return math.sqrt(partA + partB)

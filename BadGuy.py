@@ -40,9 +40,11 @@ class BadGuy(pygame.sprite.Sprite):
 		self.upperBound, self.lowerBound = up , lo
 		self.damage = 0
 		self.cd_atk = CDTimer(100)
-		self.HP = 100 + 50 * (level - 1)
+		self.HP = 100 + 100 * (level - 1)
 		self.rect_body = pygame.Rect(0, 0, 27, 57)
 		self.cd_hit = CDTimer(20)
+		self.cd_action = CDTimer(200)
+		self.cd_action.start()
 		self.dmg_period = CDTimer(1000)
 		self.dmg_taken = 0
 		self.deadFlag = False
@@ -109,7 +111,7 @@ class BadGuy(pygame.sprite.Sprite):
 
 	def setLevel(self, lv):
 		self.level = lv
-		self.HP = 100 + 50 * (lv - 1)
+		self.HP = 100 + 100 * (lv - 1)
 
 	def walk(self):
 		if self.status == BadGuy.ATK:
@@ -217,7 +219,7 @@ class BadGuy(pygame.sprite.Sprite):
 			if self.HP < 0:
 				self.HP = 0
 				self.status = BadGuy.DEAD
-			if self.dmg_taken < 70 * self.level and self.HP > 0:
+			if self.dmg_taken < 50 * self.level and self.HP > 0:
 				self.beaten()
 			else:
 				if self.isLeft():
@@ -249,26 +251,65 @@ class BadGuy(pygame.sprite.Sprite):
 		return hitBox
 	
 	def checkForTarget(self, target):
-		pass
+		if dist((self.x, self.y), (target.x, target.y)) <= self.eyeSight():
+			return True
+		return False
 		#returns if target is near in terms of x and y directions
-
-
-	def aiMove(self, target):
-		#horizontal = [v_w, -v_w]
-		#vertical = [0.8, -0.8]\
+	def withinRange(self, rg, target):
+		if dist((self.x, self.y), (target.x, target.y)) <= rg:
+			return True
+		return False
+	
+	def eyeSight(self):
+		return 200 + (self.level - 1) * 1.1
+	
+	def setTarget(self, x, y):
+		if x < 0:
+			x = 0
+		if y < self.upperBound - 80:
+			y = self.upperBound - 80
+		if x > width - 45:
+			x = width - 45
+		if y > self.lowerBound - 80:
+			y = self.lowerBound - 80
+		self.targetX = x; self.targetY = y
+	
+	def moveToTarget(self):
 		self.vec.reset(0, 0)
-		
-		if self.x < target.x:
+		if self.x < self.targetX:
 			self.moveRight()
-		if self.x > target.x:
+		if self.x > self.targetX:
 			self.moveLeft()
-		if self.y < target.y:
+		if self.y < self.targetY:
 			self.moveDown()
-		if self.y > target.y:
+		if self.y > self.targetY:
 			self.moveUp()
 	
+	def turnFace(self, target):
+		if self.isDead():
+			return 
+		if target.x < self.x:
+			self.direction = BadGuy.LEFT
+		elif target.x > self.x:
+			self.direction = BadGuy.RIGHT
+	
+	def aiMove(self, target):
+		self.turnFace(target)
+		if self.withinRange(48, target):
+			self.setTarget(self.x, self.y)
+			if self.cd_action.timeUp():
+				P = 50
+				if randint(1, 100) <= P:
+					self.attack()
+				self.cd_action.start()
+		elif self.checkForTarget(target):
+			self.setTarget(target.x, target.gnd_y)
+		else:
+			self.setTarget(self.x, self.y)
+		self.moveToTarget()
+	
 	def resurge(self):
-		self.HP = 100 + 50 * (self.level - 1)
+		self.HP = 100 + 100 * (self.level - 1)
 		self.deadFlag = False
 	
 	def move(self):

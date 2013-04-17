@@ -402,6 +402,10 @@ class BrawlEason(Eason):
         self.HP = self.max_HP
         self.mana = self.max_mana
     
+    def reset(self):
+        self.setLevel(1)
+        self.kill_cnt = 0
+    
     def setLevel(self, lv):
         self.level = lv
         self.max_HP = 500 + 50 * (lv - 1)

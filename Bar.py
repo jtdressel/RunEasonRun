@@ -11,25 +11,16 @@ from EsImage import *
 
 class Bar():
     digits = []
-    themes = {'city': (66, 80, 102)}
-    def __init__(self, theme):
-        #self.image = pygame.Surface((width, 50))
-        self.image = createBlankImage((width, 50), True, Bar.themes[theme])
-        self.image.convert_alpha()
-        self.rect = self.image.get_rect()
+    def __init__(self):
         self.dist = 0
         Bar.digits = loadSprites('digits.png', -1, 26, 42)
         m = loadSprites('M.png', -1, 32, 42)
         Bar.M = m[0]
         level = loadSprites('level.png', -1, 88, 42)
         Bar.img_lv = level[0]
-        self.setTheme(theme)
     
     def reset(self):
         self.dist = 0
-        
-    def setTheme(self, newTheme):
-        self.theme = newTheme
     
     def update(self, lv, dist):
         self.dist += dist
@@ -68,7 +59,8 @@ class statusBar():
 
 class BrawlBar():
     digits = []
-    def __init__(self):
+    def __init__(self, infinite):
+        self.infinite = infinite
         BrawlBar.digits = loadSprites('digits.png', -1, 26, 42)
         level = loadSprites('level.png', -1, 88, 42)
         kill = loadSprites('kill.png', -1, 88, 42)
@@ -92,13 +84,14 @@ class BrawlBar():
             x = int(self.strLv[i])
             dgt = BrawlBar.digits[x]
             screen.blit(dgt, (405 + 88 + 26 * i, 4))
-        if self.strKill != None:
+        if self.strKill != None and self.infinite:
             for i in range(len(self.strKill)):
                 x = int(self.strKill[i])
                 dgt = BrawlBar.digits[x]
                 screen.blit(dgt, (405 + 88 + 26 * i, 45))
         screen.blit(self.img_lv, (400, 4))
-        screen.blit(self.img_kill, (400, 45))
+        if self.infinite:
+            screen.blit(self.img_kill, (400, 45))
         self.HP.draw(screen)
         self.mana.draw(screen)
         self.exp.draw(screen)

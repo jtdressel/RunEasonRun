@@ -17,43 +17,49 @@ from Background import *
 class SpeedMode(GameMode):
     attack_sounds = []
     
-    def __init__(self):
+    def __init__(self, bgname, infinite = False):
         GameMode.__init__(self)
+        self.infinite = infinite
         self.eason = Eason(pos)
-        self.background = Background('city.png')
+        self.background = Background(bgname)
         for i in range(4):
             name = 'punch' + str(i) + '.wav'
             SpeedMode.attack_sounds.append(load_sound(name))
             SpeedMode.attack_sounds[i].set_volume(sound_volume)
         self.so_far = 0
-        self.bar = Bar('city')
+        self.bar = Bar()
         self.eason.run()
-        
+    
+    def setLevel(self, lv):
+        self.eason.reset()
+        self.eason.setLevel(lv)
+    
     def enter(self):
         ## initializations when entering this mode
         pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "beethoven_virus.ogg"))
         pygame.mixer.music.set_volume(bgm_volume)
         pygame.mixer.music.play(-1)
         pygame.mouse.set_visible(False)
-        self.eason.reset()
+        if self.infinite:
+            self.eason.reset()
+        self.bar.reset()
         floor = Floor((0, Y + 80), (700, 2))
         self.floors = [floor]
         self.joes = []
         self.eason.run()
         self.so_far = 0
-        self.bar.reset()
         self.eason.update()
+        self.gameover = False
         
     def exit(self):
         ## clean-ups when exiting
         pygame.mixer.music.stop()
         self.floors = []
         self.joes = []
-        pygame.mouse.set_visible(True)
     
     def key_down(self, event):
         ## check input events
-        if event.key == K_ESCAPE:
+        if self.infinite and event.key == K_ESCAPE:
             self.switch_to_mode('menu_mode')
         keys = pygame.key.get_pressed()
         if keys[K_SPACE]:
@@ -144,6 +150,7 @@ class SpeedMode(GameMode):
             self.eason.gameOver()
             self.so_far += clock.get_time()
             if self.so_far > 3000:
+                self.gameover = True
                 self.switch_to_mode('menu_mode')
     
     ## update all the elements of this mode
@@ -160,12 +167,13 @@ class SpeedMode(GameMode):
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
         self.bar.update(self.eason.level, self.eason.v_x / 3 )
+        if not self.infinite and self.bar.dist > 500:
+            self.switch_to_mode('menu_mode')
     
     ## draw elements onto the given screen
     def draw(self, screen):
         self.background.draw(screen)
         self.bar.draw(screen)
-        screen.blit(self.bar.image, self.bar.rect)
         for i in self.floors:
             screen.blit(i.image, i.rect)
         for i in self.joes:
