@@ -423,6 +423,7 @@ class BrawlEason(Eason):
     def reset(self):
         self.setLevel(1)
         self.kill_cnt = 0
+        self.vec = EsVector(0,0)
     
     def setLevel(self, lv):
         self.level = lv

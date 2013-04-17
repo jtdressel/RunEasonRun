@@ -15,11 +15,11 @@ def createColoredImage((width, height), color):
     return image
 
 class Floor(pygame.sprite.Sprite):
-    def __init__(self, pos, size):
+    def __init__(self, pos, size, color = (255,255,255)):
         pygame.sprite.Sprite.__init__(self)
         self.x, self.y = pos
         self.width, self.height = size
-        self.image = createColoredImage(size, (255, 255, 255))
+        self.image = createColoredImage(size, color)
         self.rect = self.image.get_rect()
         self.rect.topleft = self.x, self.y
         
