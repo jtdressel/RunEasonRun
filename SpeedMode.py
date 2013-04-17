@@ -178,7 +178,7 @@ class SpeedMode(GameMode):
             screen.blit(i.image, i.rect)
         for i in self.joes:
             screen.blit(i.image, i.rect)
-        screen.blit(self.eason.image, self.eason.rect)
+        self.eason.draw(screen)
         pygame.display.flip()
         
         

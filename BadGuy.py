@@ -261,7 +261,10 @@ class BadGuy(pygame.sprite.Sprite):
 		return False
 	
 	def eyeSight(self):
-		return 200 + (self.level - 1) * 1.1
+		dist = 200 + (self.level - 1) * 1.1
+		if self.HP < 100 + 100 * (self.level - 1):
+			dist += 400
+		return dist
 	
 	def setTarget(self, x, y):
 		if x < 0:

@@ -26,6 +26,7 @@ class Eason(pygame.sprite.Sprite):
         #--------------------------INITIALIZATION------------------------------
         pygame.sprite.Sprite.__init__(self)
         self.images = loadSprites('eason0.png', -1, 80, 80)
+        levelup = loadSprites('levelup.png', -1, 80, 80)
         self.sound_jmp = load_sound('jump.wav')
         self.sound_atk = []
         self.sound_atk.append(load_sound('attack0.wav'))
@@ -72,6 +73,8 @@ class Eason(pygame.sprite.Sprite):
         animList = [self.images[31], self.images[32], self.images[33], \
                     self.images[34]]
         self.anim_dead = Animation(animList, 30, False)
+        anim = [levelup[i] for i in range(15)]
+        self.anim_lvup = Animation(anim, 40, False)
         
         #-------------------------START----------------------------------------
         self.status = Eason.RUN
@@ -97,6 +100,10 @@ class Eason(pygame.sprite.Sprite):
             self.sound_levelup.play()
             self.setCDTime()
             self.setAtkRange()
+            self.displayLevelUp()
+    
+    def displayLevelUp(self):
+        self.anim_lvup.start()
     
     def expUp(self):
         self.exp += 1
@@ -256,6 +263,7 @@ class Eason(pygame.sprite.Sprite):
         return hitbox.colliderect(target.rect.inflate(-20, -5))
     
     def update(self):
+        self.anim_lvup.update(pygame.time.get_ticks())
         if self.status == Eason.RUN:
             self.image = self.anim_run.image
             self.anim_run.update(pygame.time.get_ticks())
@@ -286,6 +294,11 @@ class Eason(pygame.sprite.Sprite):
         
         self.move()
         self.rect.topleft = self.x, self.y
+    
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+        if self.anim_lvup.started() and not self.anim_lvup.done():
+            screen.blit(self.anim_lvup.image, self.rect)
         
 class BrawlEason(Eason):
     WALK, RUN, JUMP, ATK, DEAD, BEATEN, STAND, FFUCKED, BFUCKED = range(9)
@@ -401,6 +414,7 @@ class BrawlEason(Eason):
         self.max_mana += 20
         self.HP = self.max_HP
         self.mana = self.max_mana
+        self.displayLevelUp()
     
     def reset(self):
         self.setLevel(1)
@@ -727,6 +741,7 @@ class BrawlEason(Eason):
     def update(self):
         # Eason.update(self)
         ## ----------------------update animations------------------------
+        self.anim_lvup.update(pygame.time.get_ticks())
         if self.status == BrawlEason.RUN:
             self.image = self.anim_run.image
             self.anim_run.update(pygame.time.get_ticks())
@@ -791,9 +806,6 @@ class BrawlEason(Eason):
             return 
         self.restore()
         self.rect.topleft = self.x, self.y
-    
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
 
 class SimpleEason():
     STAND, BEAT, RUN, FLY = range(4)
