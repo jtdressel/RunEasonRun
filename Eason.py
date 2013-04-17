@@ -259,8 +259,9 @@ class Eason(pygame.sprite.Sprite):
     def hit(self, target):
         if self.status != Eason.ATK and self.status != Eason.DROP:
             return False
-        hitbox = self.rect.inflate(-30, -10)
-        return hitbox.colliderect(target.rect.inflate(-20, -5))
+        hitbox = pygame.Rect(self.x + 16, self.y + 24, 64, 56)
+        box = pygame.Rect(target.x + 29, target.y + 19, 24, 60)
+        return hitbox.colliderect(box)
     
     def update(self):
         self.anim_lvup.update(pygame.time.get_ticks())
@@ -404,14 +405,17 @@ class BrawlEason(Eason):
         self.kill_cnt += 1
     
     def expUp(self):
-        Eason.expUp(self)
+        self.exp += randint(1, 10) / 10.0
         self.killUp()
+        if self.exp >= int(self.level * difficulty):
+            self.levelUp()
+            self.exp = 0
     
     def levelUp(self):
         self.level += 1
         self.sound_levelup.play()
         self.max_HP += 50
-        self.max_mana += 20
+        self.max_mana += 5
         self.HP = self.max_HP
         self.mana = self.max_mana
         self.displayLevelUp()
@@ -423,7 +427,7 @@ class BrawlEason(Eason):
     def setLevel(self, lv):
         self.level = lv
         self.max_HP = 500 + 50 * (lv - 1)
-        self.max_mana = 100 + 20 * (lv - 1)
+        self.max_mana = 100 + 5 * (lv - 1)
         self.HP = self.max_HP
         self.mana = self.max_mana
         self.exp = 0
@@ -621,7 +625,7 @@ class BrawlEason(Eason):
             if self.HP < 0:
                 self.HP = 0
                 self.status = BrawlEason.DEAD
-            if self.dmg_taken < 50 * self.level and self.HP > 0:
+            if self.dmg_taken < 50 and self.HP > 0:
                 self.beaten()
             else:
                 if self.isLeft():

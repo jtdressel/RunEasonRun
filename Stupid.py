@@ -62,7 +62,7 @@ class Stupid(pygame.sprite.Sprite):
         return self.status == Stupid.DEAD
         
     def hit(self, target):
-        hitbox = self.rect.inflate(-35, -20)
+        hitbox = pygame.Rect(self.x + 10, self.y + 35, 12, 9)
         return hitbox.colliderect(target.rect.inflate(-35, -20))
         
     def update(self, x):
