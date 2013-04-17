@@ -167,7 +167,7 @@ class SpeedMode(GameMode):
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
         self.bar.update(self.eason.level, self.eason.v_x / 3 )
-        if not self.infinite and self.bar.dist > 500:
+        if not self.infinite and self.bar.dist > 600:
             self.switch_to_mode('menu_mode')
     
     ## draw elements onto the given screen

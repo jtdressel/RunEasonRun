@@ -61,7 +61,7 @@ class BrawlMode(GameMode):
         #self.baddy.update()
         pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "battle_bgm.ogg"))
         pygame.mixer.music.set_volume(bgm_volume)
-        #pygame.mixer.music.play(-1)
+        pygame.mixer.music.play(-1)
         pygame.mouse.set_visible(False)
         self.so_far = 0
         self.gameover = False
