@@ -26,6 +26,9 @@ class SpeedMode(GameMode):
             name = 'punch' + str(i) + '.wav'
             SpeedMode.attack_sounds.append(load_sound(name))
             SpeedMode.attack_sounds[i].set_volume(sound_volume)
+        self.color = (255,255,255)
+        if bgname == 'industrial.png':
+            self.color = (0,0,0)
         self.so_far = 0
         self.bar = Bar()
         self.eason.run()
@@ -81,7 +84,7 @@ class SpeedMode(GameMode):
         P = 0
         Q = 3 * l + 20
         new_floor = Floor((width + 1, Y + 80 + randint(-80, 80)), \
-                              (randint(50, 750), 2))
+                              (randint(50, 750), 2), self.color)
         vx = self.eason.v_x / 1.4
         vy = 7
         a = 0.3
