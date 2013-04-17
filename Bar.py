@@ -21,6 +21,7 @@ class Bar():
     
     def reset(self):
         self.dist = 0
+        self.strLv = '0'
     
     def update(self, lv, dist):
         self.dist += dist
