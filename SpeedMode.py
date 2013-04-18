@@ -46,7 +46,7 @@ class SpeedMode(GameMode):
         if self.infinite:
             self.eason.reset()
         self.bar.reset()
-        floor = Floor((0, Y + 80), (700, 2))
+        floor = Floor((0, Y + 80), (700, 2), self.color)
         self.floors = [floor]
         self.joes = []
         self.eason.run()
@@ -170,7 +170,7 @@ class SpeedMode(GameMode):
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
         self.bar.update(self.eason.level, self.eason.v_x / 3 )
-        if not self.infinite and self.bar.dist > 600:
+        if not self.infinite and self.bar.dist > 10000:
             self.switch_to_mode('menu_mode')
     
     ## draw elements onto the given screen

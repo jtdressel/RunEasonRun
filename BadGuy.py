@@ -40,7 +40,8 @@ class BadGuy(pygame.sprite.Sprite):
 		self.upperBound, self.lowerBound = up , lo
 		self.damage = 0
 		self.cd_atk = CDTimer(100)
-		self.HP = 100 + 100 * (level - 1)
+		self.max_HP = 400 + 100 * (level - 1)
+		self.HP = self.max_HP
 		self.rect_body = pygame.Rect(0, 0, 27, 57)
 		self.cd_hit = CDTimer(20)
 		self.cd_action = CDTimer(200)
@@ -111,7 +112,8 @@ class BadGuy(pygame.sprite.Sprite):
 
 	def setLevel(self, lv):
 		self.level = lv
-		self.HP = 100 + 100 * (lv - 1)
+		self.max_HP = 500 + 100 * (lv - 1)
+		self.HP = self.max_HP
 
 	def walk(self):
 		if self.status == BadGuy.ATK:
@@ -132,7 +134,7 @@ class BadGuy(pygame.sprite.Sprite):
 		self.anim_atk.start()
 		self.sound_atk[randint(0, 1)].play()
 		self.status = BadGuy.ATK
-		self.damage = 3 + randint(-2, 2) + self.level
+		self.damage = 6 + randint(-2, 2) + self.level
 		self.cd_atk.setTime(500)
 
 	def stand(self):
@@ -219,7 +221,7 @@ class BadGuy(pygame.sprite.Sprite):
 			if self.HP < 0:
 				self.HP = 0
 				self.status = BadGuy.DEAD
-			if self.dmg_taken < 50 * self.level and self.HP > 0:
+			if self.dmg_taken < 50 + 5 * (self.level - 1) and self.HP > 0:
 				self.beaten()
 			else:
 				if self.isLeft():
@@ -262,7 +264,7 @@ class BadGuy(pygame.sprite.Sprite):
 	
 	def eyeSight(self):
 		dist = 200 + (self.level - 1) * 1.1
-		if self.HP < 100 + 100 * (self.level - 1):
+		if self.HP < self.max_HP:
 			dist += 400
 		return dist
 	
@@ -312,7 +314,7 @@ class BadGuy(pygame.sprite.Sprite):
 		self.moveToTarget()
 	
 	def resurge(self):
-		self.HP = 100 + 100 * (self.level - 1)
+		self.HP = self.max_HP
 		self.deadFlag = False
 	
 	def move(self):
@@ -321,16 +323,17 @@ class BadGuy(pygame.sprite.Sprite):
 		if self.isFucked():
 			if self.anim_fucked._frame >= 4:
 				return
+			push = randint(3, 6)
 			if self.status == BadGuy.FFUCKED:
 				if self.direction == BadGuy.LEFT:
-					self.x += 3
+					self.x += push
 				else:
-					self.x -= 3
+					self.x -= push
 			else:
 				if self.direction == BadGuy.LEFT:
-					self.x -= 3
+					self.x -= push
 				else:
-					self.x += 3
+					self.x += push
 			return 
 		t = 1
 		s_x = self.v_x * t + self.a_x * t * t / 2

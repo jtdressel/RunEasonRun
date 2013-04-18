@@ -462,6 +462,8 @@ class BrawlEason(Eason):
 
 
     def light_attack(self):
+        if self.isDead():
+            return 
         if self.cd_atk.isStart() and not self.cd_atk.timeUp():
             return 
         if self.status == BrawlEason.DEAD or self.status == BrawlEason.ATK:
@@ -469,16 +471,19 @@ class BrawlEason(Eason):
         else:
             if self.isFalling():
                 self.anim_atk = self.anim_jump_punch
+                self.damage = 10 + randint(-4, 4) + self.level
             else:
                 self.anim_atk = self.anim_punch[randint(0, 1)]
+                self.damage = 4 + randint(-4, 4) + self.level
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk[randint(0, 1)].play()
         self.status = BrawlEason.ATK
-        self.damage = 4 + randint(-4, 4) + self.level
         self.cd_atk.setTime(1)
         
     def heavy_attack(self):
+        if self.isDead():
+            return 
         if self.cd_atk.isStart() and not self.cd_atk.timeUp():
             return 
         if self.status == BrawlEason.DEAD or self.status == BrawlEason.ATK:
@@ -486,14 +491,14 @@ class BrawlEason(Eason):
         else:
             if self.isFalling():
                 self.anim_atk = self.anim_kick
+                self.damage = (15 + randint(-2, 2) + self.level) * 2
             else:
                 self.anim_atk = self.anim_heavy_attack
-            
+                self.damage = (4 + randint(-2, 2) + self.level) * 2
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk[randint(0, 1)].play()
         self.status = BrawlEason.ATK
-        self.damage = (4 + randint(-2, 2) + self.level) * 2
         self.cd_atk.setTime(100)
     
     def fireball(self):
@@ -654,9 +659,9 @@ class BrawlEason(Eason):
             x = 45
             y = self.y + 36
             if self.direction == BrawlEason.LEFT:
-                x = 80 - x - 30
+                x = 80 - x - 35
             x += self.x
-            hitBox = pygame.Rect(x, y, 30, 11)
+            hitBox = pygame.Rect(x, y, 35, 11)
         
         ## ------------hitBox of kicks------------------
         if self.anim_atk.image == self.images[8] or\
@@ -676,16 +681,16 @@ class BrawlEason(Eason):
             x = 45
             y = self.y + 37
             if self.direction == BrawlEason.LEFT:
-                x = 80 - x - 30
+                x = 80 - x - 35
             x += self.x
-            hitBox = pygame.Rect(x, y, 30, 19)
+            hitBox = pygame.Rect(x, y, 35, 19)
         
         ## -------------hitBox of jump attacks--------------
         if self.anim_atk.image == self.images1[22] or self.anim_atk.image == self.images1[23]:
             x = 26
             y = self.y + 59
             if self.direction == BrawlEason.LEFT:
-                x = 80 - x - 13
+                x = 80 - x - 23
             x += self.x
             hitBox = pygame.Rect(x, y, 23, 11)
         
@@ -697,16 +702,17 @@ class BrawlEason(Eason):
         if self.isFucked():
             if self.anim_fucked._frame >= 4:
                 return 
+            push = randint(3, 6)
             if self.status == BrawlEason.FFUCKED:
                 if self.direction == BrawlEason.LEFT:
-                    self.x += 3
+                    self.x += push
                 else:
-                    self.x -= 3
+                    self.x -= push
             else:
                 if self.direction == BrawlEason.LEFT:
-                    self.x -= 3
+                    self.x -= push
                 else:
-                    self.x += 3
+                    self.x += push
             return 
         t = 1
         ver_dist = self.v * t + self.acc * t * t / 2
@@ -742,6 +748,14 @@ class BrawlEason(Eason):
         self.HP = self.max_HP
         self.mana = self.max_mana
         self.deadFlag = False
+    
+    def turn(self):
+        if self.isDead():
+            return 
+        if self.v_x > 0:
+            self.direction = BrawlEason.RIGHT
+        elif self.v_x < 0:
+            self.direction = BrawlEason.LEFT
     
     def update(self):
         # Eason.update(self)
@@ -797,13 +811,7 @@ class BrawlEason(Eason):
                 self.stand()
             self.cd_atk.start()
         
-        if self.v_x > 0:
-            self.direction = BrawlEason.RIGHT
-        elif self.v_x < 0:
-            self.direction = BrawlEason.LEFT
-        
-        
-        
+        self.turn()
         self.stepOn()
         self.getVelocity()
         self.move()

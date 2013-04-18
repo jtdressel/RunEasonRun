@@ -17,10 +17,6 @@ class StoryMode(GameMode):
         self.modes = ModeManager()
         for i in range(5):
             self.modes.register_mode(self.mode_name[i], self.lst_mode[i])
-<<<<<<< HEAD
-=======
-
->>>>>>> c51e79e43ee84a6de7b31d5816137009688553c1
         self.level = 1
     
     def enter(self):
