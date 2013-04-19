@@ -14,6 +14,7 @@ from Stupid import *
 from Bar import *
 from Background import *
 
+
 class SpeedMode(GameMode):
     attack_sounds = []
     
@@ -37,6 +38,8 @@ class SpeedMode(GameMode):
         self.so_far = 0
         self.bar = Bar()
         self.eason.run()
+        self.alpha = 0
+        self.alpha_value = 20
     
     def setLevel(self, lv):
         self.eason.reset()
@@ -59,6 +62,8 @@ class SpeedMode(GameMode):
         self.eason.update()
         self.gameover = False
         self.trans = False
+        self.alpha = 0
+        self.img_trans = createBlankImage(size, False, (0, 0, 0))
         
     def exit(self):
         ## clean-ups when exiting
@@ -171,8 +176,17 @@ class SpeedMode(GameMode):
     
     def update(self, clock):
         if self.pause:
-            if not pygame.mixer.music.get_busy():
-                self.switch_to_mode('menu_mode')
+            if self.trans:
+                if not pygame.mixer.music.get_busy():
+                    self.switch_to_mode('menu_mode')
+                else:
+                    self.alpha += self.alpha_value
+                    if self.alpha > 255:
+                        self.alpha = 255
+                        self.alpha_value *= -1
+                    if self.alpha < 0:
+                        self.alpha = 0
+                        self.alpha_value *= -1
             return 
         self.add_new_floor()
         self.out_of_sight()
@@ -202,6 +216,10 @@ class SpeedMode(GameMode):
         for i in self.joes:
             screen.blit(i.image, i.rect)
         self.eason.draw(screen)
+        if self.trans:
+            img = self.img_trans
+            img.set_alpha(self.alpha)
+            screen.blit(img, (0, 0))
         pygame.display.flip()
         
         
