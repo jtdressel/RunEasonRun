@@ -13,6 +13,7 @@ from BadGuy import *
 from Background import *
 from Fireball import *
 from Bar import *
+from Julian import *
 
 class BrawlMode(GameMode):
     def __init__(self, name, upper, lower, infinite = False):
@@ -27,8 +28,9 @@ class BrawlMode(GameMode):
         self.so_far = 0
 
         #badguy1
-        self.baddy = BadGuy((width - 80, randint(upper-80, lower-80)), upper, lower, 5)
-        self.baddy.stand()
+        #self.baddy = BadGuy((width - 80, randint(upper-80, lower-80)), upper, lower, 5)
+        
+        #self.baddy.stand()
     
     def spawn_enemy(self, numEnemy, maxLv):
         self.baddy = []
@@ -36,7 +38,7 @@ class BrawlMode(GameMode):
             x = (i % 2) * width - 40
             y = randint(self.upper_bound-80, self.lower_bound-80)
             lv = randint(1, maxLv)
-            self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv))
+            self.baddy.append(Julian((x, y), self.upper_bound, self.lower_bound, lv))
             self.baddy[i].stand()
     
     def newBound(self, nu, nl):
