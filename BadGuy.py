@@ -203,6 +203,7 @@ class BadGuy(pygame.sprite.Sprite):
 		self.anim_fucked.reset()
 		self.anim_fucked.start()
 		self.attack_sounds[randint(0, 3)].play()
+		self.cd_action.start()
 
 	def hit(self, hitbox, damage, x):
 		if self.isDead():
@@ -253,12 +254,12 @@ class BadGuy(pygame.sprite.Sprite):
 		return hitBox
 	
 	def checkForTarget(self, target):
-		if dist((self.x, self.y), (target.x, target.y)) <= self.eyeSight():
+		if dist((self.x, self.y), (target.x, target.gnd_y)) <= self.eyeSight():
 			return True
 		return False
 		#returns if target is near in terms of x and y directions
 	def withinRange(self, rg, target):
-		if dist((self.x, self.y), (target.x, target.y)) <= rg:
+		if dist((self.x, self.y), (target.x, target.gnd_y)) <= rg:
 			return True
 		return False
 	
@@ -280,6 +281,8 @@ class BadGuy(pygame.sprite.Sprite):
 		self.targetX = x; self.targetY = y
 	
 	def moveToTarget(self):
+		if self.cd_hit.isStart() and not self.cd_hit.timeUp():
+			return 
 		self.vec.reset(0, 0)
 		if self.x < self.targetX:
 			self.moveRight()
@@ -323,7 +326,7 @@ class BadGuy(pygame.sprite.Sprite):
 		if self.isFucked():
 			if self.anim_fucked._frame >= 4:
 				return
-			push = randint(3, 6)
+			push = randint(3, 10)
 			if self.status == BadGuy.FFUCKED:
 				if self.direction == BadGuy.LEFT:
 					self.x += push

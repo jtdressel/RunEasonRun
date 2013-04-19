@@ -21,7 +21,10 @@ class SpeedMode(GameMode):
         GameMode.__init__(self)
         self.infinite = infinite
         self.eason = Eason(pos)
-        self.background = Background(bgname)
+        if bgname == 'dark0.png':
+            self.background = AnimatedBackground('dark0.png', 'dark1.png')
+        else:
+            self.background = Background(bgname)
         for i in range(4):
             name = 'punch' + str(i) + '.wav'
             SpeedMode.attack_sounds.append(load_sound(name))
@@ -29,6 +32,8 @@ class SpeedMode(GameMode):
         self.color = (255,255,255)
         if bgname == 'industrial.png':
             self.color = (0,0,0)
+        self.pause = False
+        self.trans = False
         self.so_far = 0
         self.bar = Bar()
         self.eason.run()
@@ -53,6 +58,7 @@ class SpeedMode(GameMode):
         self.so_far = 0
         self.eason.update()
         self.gameover = False
+        self.trans = False
         
     def exit(self):
         ## clean-ups when exiting
@@ -71,6 +77,8 @@ class SpeedMode(GameMode):
             self.eason.attack()
         if keys[K_k]:
             self.eason.drop()
+        if keys[K_p]:
+            self.setPause()
     
     def add_new_floor(self):
         if len(self.floors) > 0:
@@ -157,7 +165,15 @@ class SpeedMode(GameMode):
                 self.switch_to_mode('menu_mode')
     
     ## update all the elements of this mode
+    
+    def setPause(self):
+        self.pause = not self.pause
+    
     def update(self, clock):
+        if self.pause:
+            if not pygame.mixer.music.get_busy():
+                self.switch_to_mode('menu_mode')
+            return 
         self.add_new_floor()
         self.out_of_sight()
         self.fall()
@@ -170,8 +186,12 @@ class SpeedMode(GameMode):
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
         self.bar.update(self.eason.level, self.eason.v_x / 3 )
-        if not self.infinite and self.bar.dist > 10000:
-            self.switch_to_mode('menu_mode')
+        if not self.infinite and self.bar.dist > 100:
+            pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "transition.ogg"))
+            pygame.mixer.music.play(1)
+            self.trans = True
+            self.setPause()
+            #self.switch_to_mode('menu_mode')
     
     ## draw elements onto the given screen
     def draw(self, screen):

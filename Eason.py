@@ -259,7 +259,7 @@ class Eason(pygame.sprite.Sprite):
     def hit(self, target):
         if self.status != Eason.ATK and self.status != Eason.DROP:
             return False
-        hitbox = pygame.Rect(self.x + 16, self.y + 24, 64, 56)
+        hitbox = pygame.Rect(self.x + 16, self.y + 24, 70, 56)
         box = pygame.Rect(target.x + 29, target.y + 19, 24, 60)
         return hitbox.colliderect(box)
     
@@ -393,7 +393,7 @@ class BrawlEason(Eason):
     
     def getVelocity(self):
         self.v_x = self.velocity * self.vec.x
-        self.v_y = 0.8 * self.vec.y
+        self.v_y = self.velocity / 2.0 * self.vec.y
     
     def speedUp(self):
         self.velocity = v_r

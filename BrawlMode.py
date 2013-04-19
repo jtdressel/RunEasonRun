@@ -18,7 +18,10 @@ class BrawlMode(GameMode):
     def __init__(self, name, upper, lower, infinite = False):
         GameMode.__init__(self)
         self.infinite = infinite
-        self.background = Background(name)
+        if name == 'finalboss0.png':
+            self.background = AnimatedBackground('finalboss0.png', 'finalboss1.png')
+        else:
+            self.background = Background(name)
         self.upper_bound, self.lower_bound = upper, lower
         self.eason = BrawlEason(pos, upper, lower)
         self.eason.stand()
@@ -61,7 +64,10 @@ class BrawlMode(GameMode):
         #self.baddy.update()
         pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "battle_bgm.ogg"))
         pygame.mixer.music.set_volume(bgm_volume)
-        pygame.mixer.music.play(-1)
+        if self.infinite:
+            pygame.mixer.music.play(-1)
+        else:
+            pygame.mixer.music.play(-1, 3.5)
         pygame.mouse.set_visible(False)
         self.so_far = 0
         self.gameover = False
@@ -103,6 +109,9 @@ class BrawlMode(GameMode):
             self.eason.setLevel(1)
         if keys[K_o]:
             self.eason.levelUp()
+        if keys[K_v]:
+            for i in self.baddy:
+                i.HP = 0
     
     def key_up(self, event):
         vh = EsVector(1, 0)

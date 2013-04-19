@@ -12,10 +12,12 @@ class StoryMode(GameMode):
     def __init__(self):
         self.ptr = 0
         self.lst_mode = [self, SpeedMode('city.png', False), BrawlMode('street.png', 224, 385, False), \
-                         SpeedMode('industrial.png', False), BrawlMode('warehouse.png', 290, 380, False)]
-        self.mode_name = ['menu_mode', 'city_run', 'street_fight', 'industrial_run', 'warehouse_fight']
+                         SpeedMode('industrial.png', False), BrawlMode('warehouse.png', 290, 380, False), \
+                         SpeedMode('dark0.png', False), BrawlMode('finalboss0.png', 302, 400, False)]
+        self.mode_name = ['menu_mode', 'city_run', 'street_fight', 'industrial_run', 'warehouse_fight', \
+                          'lightning_run', 'lightning_fight']
         self.modes = ModeManager()
-        for i in range(5):
+        for i in range(7):
             self.modes.register_mode(self.mode_name[i], self.lst_mode[i])
         self.level = 1
     
@@ -31,8 +33,11 @@ class StoryMode(GameMode):
             
             self.level = self.lst_mode[self.ptr].eason.level
         self.ptr += 1
-        if self.ptr > 4:
-            self.ptr = 1
+        if self.ptr > 6:
+            self.switch_to_mode('menu_mode')
+            self.ptr = 0
+            self.level = 1
+            return 
         self.lst_mode[self.ptr].setLevel(self.level)
         self.modes.switch_to_mode(self.mode_name[self.ptr])
     

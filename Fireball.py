@@ -31,8 +31,8 @@ class Fireball(pygame.sprite.Sprite):
         self.anim_start.start()
     
     def getHitBox(self):
-        x, y = 16, 21
-        w, h = 43, 28
+        x, y = 16, 39
+        w, h = 43, 11
         if self.direction == Fireball.LEFT:
             x = 80 - x - w
         x += self.x
