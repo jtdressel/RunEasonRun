@@ -11,9 +11,9 @@ class Julian(BadGuy):
         #filename = str((level-1) % 3) + '.png'
         self.images = loadSprites('julian_0.png', -1, 80, 100)
         self.images1 = loadSprites('julian_1.png', -1, 80, 100)
-        self.imagesCol = loadSprites('julian_col.png', -1, 100, 400)
-        
-        
+        self.imagesCol = loadSprites('julian_col.png', -1, 200, 405)
+        self.images2 = loadSprites('julian_2.png', -1, 80, 100)        
+        print self.images2.__len__()      
         self.rect = self.images[0].get_rect()
         self.attack_sounds = []
         for i in range(4):
@@ -49,9 +49,13 @@ class Julian(BadGuy):
         self.velocity = v_w
         
         #-----------------------ANIMATIONS-------------------------------------
-        animList = [self.imagesCol[1]]
-    #    animList = [self.images1[6], self.images1[6], self.images1[6], self.images1[6], self.images1[6]] 
-        self.anim_stand = Animation(animList, 10, True)
+        animList = [self.images2[49],self.images2[48],self.images2[47],self.images2[45]]
+        energy_charge_list = [self.images2[39],self.images2[38],self.images2[37],self.images2[46],self.images2[45],self.images2[44]]
+        #animList = [self.images1[6], self.images1[6], self.images1[6], self.images1[6], self.images1[6]] 
+        energy_uppercut_list=[self.images2[32],self.images2[31],self.images2[30]]
+        energy_punch_list=[self.images2[29],self.images2[28],self.images2[27]]
+        self.anim_stand = Animation(energy_uppercut_list, 10, True)
+
         self.anim_attack = []
         
         animList = [self.images[20],self.images[17], self.images[18], self.images[19]]

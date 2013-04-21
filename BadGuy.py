@@ -399,6 +399,7 @@ class BadGuy(pygame.sprite.Sprite):
 		self.rect.topleft = self.x, self.y
 	
 	def draw(self, screen):
+                
 		screen.blit(self.image, self.rect)
 
 
