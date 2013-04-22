@@ -104,7 +104,7 @@ class SimpleStupid():
         self.anim_atks.append(Animation(animLst, 15, False))
         animLst = [self.images[32], self.images[31], self.images[30]]
         self.anim_atks.append(Animation(animLst, 15, False))
-        animLst = [self.images[15], self.images[14], self.images[14],\
+        animLst = [self.images[15], self.images[60], self.images[60],\
                     self.images[15]]
         self.anim_kick = Animation(animLst, 10, False)
         self.anim_punch = self.anim_atks[0]

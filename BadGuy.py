@@ -34,7 +34,7 @@ class BadGuy(pygame.sprite.Sprite):
 		self.v_x, self.v_y = 0, 0
 		self.a_x, self.a_y = 0, 0
 		self.width, self.height = 80, 80
-		self.status = None
+		self.status = BadGuy.STAND
 		self.level = level
 		self.direction = BadGuy.LEFT
 		self.upperBound, self.lowerBound = up , lo

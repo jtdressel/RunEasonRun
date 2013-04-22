@@ -18,15 +18,17 @@ class Bar():
         Bar.M = m[0]
         level = loadSprites('level.png', -1, 88, 42)
         Bar.img_lv = level[0]
+        Bar.cd = cdBar((40, 370))
     
     def reset(self):
         self.dist = 0
         self.strLv = '0'
     
-    def update(self, lv, dist):
+    def update(self, lv, dist, frac):
         self.dist += dist
         self.dist = int(self.dist)
         self.strLv = str(lv)
+        self.cd.update(frac)
     
     def draw(self, screen):
         for i in range(len(self.strLv)):
@@ -34,6 +36,7 @@ class Bar():
             dgt = Bar.digits[x]
             screen.blit(dgt, (405 + 88 + 26 * i, 4))
         screen.blit(Bar.img_lv, (400, 4))
+        self.cd.draw(screen)
         
         strDist = str(self.dist)
         for i in range(len(strDist)):
@@ -41,6 +44,22 @@ class Bar():
             dgt = Bar.digits[x]
             screen.blit(dgt, (51 + 26 * i, 4))
         screen.blit(Bar.M, (55 + len(strDist) * 26, 4))
+
+class cdBar():
+    def __init__(self, pos):
+        self.case = loadImage('c1.png', None)
+        self.bar = loadImage('c0.png', None)
+        self.rect_bar = Rect(0, 0, 60, 10)
+        self.width = 60
+        self.x, self.y = self.pos = pos
+    
+    def update(self, frac):
+        self.width = 60 * frac
+        self.rect_bar.width = self.width
+    
+    def draw(self, screen):
+        screen.blit(self.case, self.pos)
+        screen.blit(self.bar, (self.x + 2, self.y + 2), self.rect_bar)
 
 class statusBar():
     def __init__(self, name, pos):

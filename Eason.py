@@ -53,6 +53,7 @@ class Eason(pygame.sprite.Sprite):
         self.cd = False
         self.exp = 0
         self.level = 1
+        self.dropDmg = False
         self.CDtimer = CDTimer(self.cd_time)
         
         #----------------------ANIMATIONS--------------------------------------
@@ -129,6 +130,11 @@ class Eason(pygame.sprite.Sprite):
     def drop(self):
         if self.status == Eason.DEAD:
             return 
+        if self.CDtimer.isStart() and not self.CDtimer.timeUp():
+            self.dropDmg = False
+        else:
+            self.dropDmg = True
+            self.CDtimer.start()
         self.status = Eason.DROP
         self.a_y = DRP_ACC
         if not self.anim_DROP._start:
@@ -258,6 +264,8 @@ class Eason(pygame.sprite.Sprite):
     
     def hit(self, target):
         if self.status != Eason.ATK and self.status != Eason.DROP:
+            return False
+        if self.status == Eason.DROP and not self.dropDmg:
             return False
         hitbox = pygame.Rect(self.x + 16, self.y + 24, 70, 56)
         box = pygame.Rect(target.x + 29, target.y + 19, 24, 60)
@@ -578,7 +586,7 @@ class BrawlEason(Eason):
     def isDead(self):
         if self.HP <= 0:
             return True
-        return self.status == BrawlEason.DEAD
+        return False
     
     def isActing(self):
         if self.isBeaten():
@@ -601,12 +609,14 @@ class BrawlEason(Eason):
         self.attack_sounds[randint(0, 3)].play()
     
     def die(self):
+        if self.status == BrawlEason.DEAD:
+            return 
         self.status = BrawlEason.DEAD
     
-    def fucked(self, dir):
+    def fucked(self, dr):
         if self.status == BrawlEason.FFUCKED or self.status == BrawlEason.BFUCKED:
             return
-        self.status = dir
+        self.status = dr
         self.anim_fucked = self.anim_front_fucked
         if self.status == BrawlEason.BFUCKED:
             self.anim_fucked = self.anim_back_fucked
@@ -909,3 +919,6 @@ class SimpleEason():
         
         self.move()
         self.rect.topleft = self.x, self.y
+    
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)

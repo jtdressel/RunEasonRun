@@ -15,6 +15,7 @@ from Fireball import *
 from Bar import *
 
 class BrawlMode(GameMode):
+    FIGHT, VICTORY = range(2)
     def __init__(self, name, upper, lower, infinite = False):
         GameMode.__init__(self)
         self.infinite = infinite
@@ -28,10 +29,9 @@ class BrawlMode(GameMode):
         self.fireball = []
         self.bar = BrawlBar(infinite)
         self.so_far = 0
+        self.status = BrawlMode.FIGHT
 
         #badguy1
-        self.baddy = BadGuy((width - 80, randint(upper-80, lower-80)), upper, lower, 5)
-        self.baddy.stand()
     
     def spawn_enemy(self, numEnemy, maxLv):
         self.baddy = []
@@ -49,6 +49,10 @@ class BrawlMode(GameMode):
         self.eason.setLevel(lv)
     
     def enter(self):
+        self.trans = False
+        self.mask = createBlankImage(size, False, (0, 0, 0))
+        self.alpha_value = 0
+        self.status = BrawlMode.FIGHT
         if self.infinite:
             self.eason.reset()
         self.eason.update()
@@ -78,7 +82,8 @@ class BrawlMode(GameMode):
     
     def key_down(self, event):
         if event.key == K_ESCAPE:
-            self.switch_to_mode('menu_mode')
+            self.trans = True
+            self.gameover = True
 
         keys = pygame.key.get_pressed()
         vh = EsVector(1, 0)
@@ -95,15 +100,27 @@ class BrawlMode(GameMode):
         if keys[K_LSHIFT]:
             self.eason.speedUp()
         if keys[K_j] and keys[K_k]:
-            f = self.eason.fireball()
-            if f != None:
-                self.fireball.append(f)
+            if not self.infinite and self.status == BrawlMode.VICTORY:
+                self.trans = True
+            else:
+                f = self.eason.fireball()
+                if f != None:
+                    self.fireball.append(f)
         elif keys[K_j]:
-            self.eason.light_attack()
+            if not self.infinite and self.status == BrawlMode.VICTORY:
+                self.trans = True
+            else:
+                self.eason.light_attack()
         elif keys[K_k]:
-            self.eason.heavy_attack()
+            if not self.infinite and self.status == BrawlMode.VICTORY:
+                self.trans = True
+            else:
+                self.eason.heavy_attack()
         if keys[K_SPACE]:
-            self.eason.jump()
+            if not self.infinite and self.status == BrawlMode.VICTORY:
+                self.trans = True
+            else:
+                self.eason.jump()
         
         if keys[K_i]:
             self.eason.setLevel(1)
@@ -144,20 +161,20 @@ class BrawlMode(GameMode):
                 break
         if vic:
             self.so_far += clock.get_time()
+            if self.status != BrawlMode.VICTORY and not self.infinite:
+                pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "fightwin.ogg"))
+                pygame.mixer.music.play(-1)
+                self.status = BrawlMode.VICTORY
             if self.so_far > 2000:
-                if not self.infinite:
-                    self.switch_to_mode('menu_mode')
-                else:
+                if self.infinite:
                     self.spawn_enemy(2 + self.eason.level, self.eason.level)
                     self.so_far = 0
     
     def checkDeath(self, clock):
         if self.eason.isDead():
             pygame.mixer.music.stop()
-            self.so_far += clock.get_time()
-            if self.so_far > 3000:
-                self.gameover = True
-                self.switch_to_mode('menu_mode')
+            self.gameover = True
+            self.trans = True
     
     def update(self, clock):
         self.checkDeath(clock)
@@ -190,6 +207,11 @@ class BrawlMode(GameMode):
                 i.deadFlag = True
                 self.eason.expUp()
         self.background.update(0)
+        if self.trans:
+            self.alpha_value += 3
+            if self.alpha_value > 255:
+                self.alpha_value = 255
+                self.switch_to_mode('menu_mode')
 
     def draw(self, screen):
         self.background.draw(screen)
@@ -212,6 +234,8 @@ class BrawlMode(GameMode):
         for i in lst:
             i.draw(screen)
         self.bar.draw(screen)
+        self.mask.set_alpha(self.alpha_value)
+        screen.blit(self.mask, (0, 0))
         pygame.display.flip()
 
 def cmp(obj):

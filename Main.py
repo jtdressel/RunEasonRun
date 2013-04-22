@@ -40,11 +40,12 @@ def main():
     modes = ModeManager()
     ## register the two modes
     modes.register_mode('story_mode', StoryMode())
-    modes.register_mode('speed_mode', SpeedMode('dark0.png', infinite = True))
+    modes.register_mode('speed_mode', SpeedMode('pipe.png', infinite = True))
     modes.register_mode('menu_mode', MenuMode())
     modes.register_mode('brawl_mode', BrawlMode('arena.png', 107, 400, True))
     ## program starts with shell menu
     modes.switch_to_mode('menu_mode')
+    pygame.mixer.music.set_volume(bgm_volume)
     ## main loop
     while not modes.quitting():
         clock.tick(FPS)

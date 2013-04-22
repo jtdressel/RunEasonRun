@@ -62,8 +62,9 @@ class SpeedMode(GameMode):
         self.eason.update()
         self.gameover = False
         self.trans = False
+        self.pause = False
         self.alpha = 0
-        self.img_trans = createBlankImage(size, False, (0, 0, 0))
+        self.img_trans = createBlankImage(size, False, (255, 255, 255))
         
     def exit(self):
         ## clean-ups when exiting
@@ -73,17 +74,20 @@ class SpeedMode(GameMode):
     
     def key_down(self, event):
         ## check input events
-        if self.infinite and event.key == K_ESCAPE:
-            self.switch_to_mode('menu_mode')
+        if event.key == K_ESCAPE:
+            self.trans = True
+            self.gameover = True
         keys = pygame.key.get_pressed()
+        if keys[K_p]:
+            self.setPause()
+        if self.pause:
+            return
         if keys[K_SPACE]:
             self.eason.jump()
         if keys[K_j]:
             self.eason.attack()
         if keys[K_k]:
             self.eason.drop()
-        if keys[K_p]:
-            self.setPause()
     
     def add_new_floor(self):
         if len(self.floors) > 0:
@@ -199,13 +203,19 @@ class SpeedMode(GameMode):
         for i in self.joes:
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
-        self.bar.update(self.eason.level, self.eason.v_x / 3 )
-        if not self.infinite and self.bar.dist > 100:
+        frac = self.eason.CDtimer.getPercentage()
+        self.bar.update(self.eason.level, self.eason.v_x / 3, frac)
+        if not self.infinite and self.bar.dist > 500:
             pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "transition.ogg"))
             pygame.mixer.music.play(1)
             self.trans = True
             self.setPause()
             #self.switch_to_mode('menu_mode')
+        if self.trans:
+            self.alpha += 3
+            if self.alpha > 255:
+                self.alpha = 255
+                self.switch_to_mode('menu_mode')
     
     ## draw elements onto the given screen
     def draw(self, screen):
