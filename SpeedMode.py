@@ -229,11 +229,11 @@ class SpeedMode(GameMode):
         for i in self.joes:
             screen.blit(i.image, i.rect)
         self.eason.draw(screen)
-# <<<<<<< HEAD
-#         if self.trans:
-#             img = self.img_trans
-#             img.set_alpha(self.alpha)
-#             screen.blit(img, (0, 0))
+
+        if self.trans:
+             img = self.img_trans
+             img.set_alpha(self.alpha)
+             screen.blit(img, (0, 0))
 # =======
 #         if self.blob != None:
 #             self.blob.draw(screen)
