@@ -39,13 +39,13 @@ class SpeedMode(GameMode):
         self.so_far = 0
         self.bar = Bar()
         self.eason.run()
-<<<<<<< HEAD
+
         self.alpha = 0
         self.alpha_value = 20
-=======
 
-        self.blob = None
->>>>>>> blob changes
+
+#         self.blob = None
+# >>>>>>> blob changes
     
     def setLevel(self, lv):
         self.eason.reset()
@@ -182,7 +182,7 @@ class SpeedMode(GameMode):
     
     def update(self, clock):
         if self.pause:
-<<<<<<< HEAD
+# <<<<<<< HEAD
             if self.trans:
                 if not pygame.mixer.music.get_busy():
                     self.switch_to_mode('menu_mode')
@@ -194,12 +194,12 @@ class SpeedMode(GameMode):
                     if self.alpha < 0:
                         self.alpha = 0
                         self.alpha_value *= -1
-=======
-            self.blob = Blob((0,0), 640)
-            self.blob.update()
-            if not pygame.mixer.music.get_busy():
-                self.switch_to_mode('menu_mode')
->>>>>>> blob changes
+# =======
+#             self.blob = Blob((0,0), 640)
+#             self.blob.update()
+#             if not pygame.mixer.music.get_busy():
+#                 self.switch_to_mode('menu_mode')
+# >>>>>>> blob changes
             return 
         self.add_new_floor()
         self.out_of_sight()
@@ -229,15 +229,15 @@ class SpeedMode(GameMode):
         for i in self.joes:
             screen.blit(i.image, i.rect)
         self.eason.draw(screen)
-<<<<<<< HEAD
-        if self.trans:
-            img = self.img_trans
-            img.set_alpha(self.alpha)
-            screen.blit(img, (0, 0))
-=======
-        if self.blob != None:
-            self.blob.draw(screen)
->>>>>>> blob changes
+# <<<<<<< HEAD
+#         if self.trans:
+#             img = self.img_trans
+#             img.set_alpha(self.alpha)
+#             screen.blit(img, (0, 0))
+# =======
+#         if self.blob != None:
+#             self.blob.draw(screen)
+# >>>>>>> blob changes
         pygame.display.flip()
         
         
