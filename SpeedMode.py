@@ -14,6 +14,7 @@ from Stupid import *
 from Bar import *
 from Background import *
 from Blob import *
+from random import *
 
 
 class SpeedMode(GameMode):
@@ -213,7 +214,7 @@ class SpeedMode(GameMode):
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
         self.bar.update(self.eason.level, self.eason.v_x / 3 )
-        if not self.infinite and self.bar.dist > 100:
+        if not self.infinite and self.bar.dist > randint(2500,2999):
             pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "transition.ogg"))
             pygame.mixer.music.play(1)
             self.trans = True
@@ -229,11 +230,11 @@ class SpeedMode(GameMode):
         for i in self.joes:
             screen.blit(i.image, i.rect)
         self.eason.draw(screen)
-# <<<<<<< HEAD
-#         if self.trans:
-#             img = self.img_trans
-#             img.set_alpha(self.alpha)
-#             screen.blit(img, (0, 0))
+
+        if self.trans:
+            img = self.img_trans
+            img.set_alpha(self.alpha)
+            screen.blit(img, (0, 0))
 # =======
 #         if self.blob != None:
 #             self.blob.draw(screen)

@@ -36,7 +36,7 @@ class BrawlMode(GameMode):
     def spawn_enemy(self, numEnemy, maxLv):
         self.baddy = []
         for i in range(numEnemy):
-            x = (i % 2) * width - 40
+            x = (i % 2) * width - 120
             y = randint(self.upper_bound-80, self.lower_bound-80)
             lv = randint(1, maxLv)
             self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv))
