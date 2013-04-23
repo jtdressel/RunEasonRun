@@ -13,6 +13,7 @@ from BadGuy import *
 from Background import *
 from Fireball import *
 from Bar import *
+from Dennis import * 
 
 class BrawlMode(GameMode):
     FIGHT, VICTORY = range(2)
@@ -30,16 +31,14 @@ class BrawlMode(GameMode):
         self.bar = BrawlBar(infinite)
         self.so_far = 0
         self.status = BrawlMode.FIGHT
-
         #badguy1
-    
     def spawn_enemy(self, numEnemy, maxLv):
         self.baddy = []
         for i in range(numEnemy):
             x = (i % 2) * width - 40
             y = randint(self.upper_bound-80, self.lower_bound-80)
             lv = randint(1, maxLv)
-            self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv))
+            self.baddy.append(Dennis((x, y), self.upper_bound, self.lower_bound, lv))
             self.baddy[i].stand()
     
     def newBound(self, nu, nl):
