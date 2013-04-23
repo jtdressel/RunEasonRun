@@ -42,10 +42,6 @@ class SpeedMode(GameMode):
 
         self.alpha = 0
         self.alpha_value = 20
-
-
-#         self.blob = None
-# >>>>>>> blob changes
     
     def setLevel(self, lv):
         self.eason.reset()
@@ -186,7 +182,6 @@ class SpeedMode(GameMode):
     
     def update(self, clock):
         if self.pause:
-# <<<<<<< HEAD
             if self.trans:
                 if not pygame.mixer.music.get_busy():
                     self.switch_to_mode('menu_mode')
@@ -198,12 +193,6 @@ class SpeedMode(GameMode):
                     if self.alpha < 0:
                         self.alpha = 0
                         self.alpha_value *= -1
-# =======
-#             self.blob = Blob((0,0), 640)
-#             self.blob.update()
-#             if not pygame.mixer.music.get_busy():
-#                 self.switch_to_mode('menu_mode')
-# >>>>>>> blob changes
             return 
         self.add_new_floor()
         self.out_of_sight()
@@ -223,12 +212,15 @@ class SpeedMode(GameMode):
             pygame.mixer.music.play(1)
             self.trans = True
             self.setPause()
+<<<<<<< HEAD
             #self.switch_to_mode('menu_mode')
         if self.trans:
             self.alpha += 3
             if self.alpha > 255:
                 self.alpha = 255
                 self.switch_to_mode('menu_mode')
+=======
+>>>>>>> refactoring
     
     ## draw elements onto the given screen
     def draw(self, screen):
@@ -244,10 +236,7 @@ class SpeedMode(GameMode):
              img = self.img_trans
              img.set_alpha(self.alpha)
              screen.blit(img, (0, 0))
-# =======
-#         if self.blob != None:
-#             self.blob.draw(screen)
-# >>>>>>> blob changes
+
         pygame.display.flip()
         
         
