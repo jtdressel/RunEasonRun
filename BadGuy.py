@@ -17,7 +17,8 @@ class BadGuy(pygame.sprite.Sprite):
 		#-----------------------INITIALIZATION---------------------------------
 		pygame.sprite.Sprite.__init__(self)
 		#filename = str((level-1) % 3) + '.png'
-		self.images = loadSprites('0.png', -1, 80, 80)
+		#mark_0_a.png mark_0_b.png dennis_0.png firen_0.png jack_0.png
+		self.images = loadSprites('mark_0_a.png', -1, 80, 80)
 		self.rect = self.images[0].get_rect()
 		self.attack_sounds = []
 		for i in range(4):
