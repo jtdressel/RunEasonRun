@@ -41,3 +41,19 @@ class Background():
     def draw(self, screen):
         for i in range(2):
             screen.blit(self.images[i], self.rects[i])
+
+class AnimatedBackground(Background):
+    def __init__(self, name1, name2):
+        self.images = [loadImage(name1, None), loadImage(name2, None)]
+        self.image = self.images[0]
+        
+    def update(self, x):
+        P = 5
+        if randint(1, 1000) <= P:
+            self.image = self.images[1]
+        else:
+            self.image = self.images[0]
+    
+    def draw(self, screen):
+        screen.blit(self.image, (0, 0))
+            

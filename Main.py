@@ -6,17 +6,18 @@ Created on 2013-3-2
 The main structure and core logic of this game
 '''
 from root import *
-from Eason import *
-from Floor import *
-from Stupid import *
-from EsAnimation import *
-from EsImage import *
+#from Eason import *
+#from Floor import *
+#from Stupid import *
+#from EsAnimation import *
+#from EsImage import *
 from EsSounds import *
 from modes import *
 from StartingMode import *
 from SpeedMode import *
 from MenuMode import *
 from BrawlMode import *
+from StoryMode import *
 
 def loadIcon(name):
     fullname = os.path.join(kSrcDir, name)
@@ -38,12 +39,13 @@ def main():
     ## set up the modes
     modes = ModeManager()
     ## register the two modes
-    modes.register_mode('start_mode', StartingMode())
-    modes.register_mode('speed_mode', SpeedMode())
+    modes.register_mode('story_mode', StoryMode())
+    modes.register_mode('speed_mode', SpeedMode('pipe.png', infinite = True))
     modes.register_mode('menu_mode', MenuMode())
-    modes.register_mode('brawl_mode', BrawlMode('street.png', 224, 385))
+    modes.register_mode('brawl_mode', BrawlMode('arena.png', 107, 400, True))
     ## program starts with shell menu
-    modes.switch_to_mode('brawl_mode')
+    modes.switch_to_mode('menu_mode')
+    pygame.mixer.music.set_volume(bgm_volume)
     ## main loop
     while not modes.quitting():
         clock.tick(FPS)

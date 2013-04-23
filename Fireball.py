@@ -31,16 +31,12 @@ class Fireball(pygame.sprite.Sprite):
         self.anim_start.start()
     
     def getHitBox(self):
-        if self.status == Fireball.FLY or self.status == Fireball.START:
-            x, y = 16, 21
-            w, h = 43, 28
-            if self.direction == Fireball.LEFT:
-                x = 80 - x - w
-            x += self.x
-            y += self.y
-        if self.status == Fireball.EXPLODE:
-            x, y = self.x - 40, self.y - 40
-            w, h = 160, 160
+        x, y = 16, 39
+        w, h = 43, 11
+        if self.direction == Fireball.LEFT:
+            x = 80 - x - w
+        x += self.x
+        y += self.y
         hitBox = pygame.Rect(x, y, w, h)
         return hitBox
     

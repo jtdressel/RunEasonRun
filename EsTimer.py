@@ -26,6 +26,11 @@ class CDTimer():
     def reset(self):
         self._start = False
     
+    def getPercentage(self):
+        if self.isStart():
+            return (pygame.time.get_ticks() - self.startTime + 0.0) / (self.time + 0.0)
+        return 1
+    
     def timeUp(self):
         if not self._start:
             return False

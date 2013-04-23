@@ -27,3 +27,4 @@ difficulty = globals['difficulty']
 hitTime = globals['hit_time']
 v_w = globals['v_walk']
 v_r = globals['v_run']
+alpha_value = 10

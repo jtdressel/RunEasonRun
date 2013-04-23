@@ -13,49 +13,81 @@ from Floor import *
 from Stupid import *
 from Bar import *
 from Background import *
+from Blob import *
+
 
 class SpeedMode(GameMode):
     attack_sounds = []
     
-    def __init__(self):
+    def __init__(self, bgname, infinite = False):
         GameMode.__init__(self)
+        self.infinite = infinite
         self.eason = Eason(pos)
-        self.background = Background('city.png')
+        if bgname == 'dark0.png':
+            self.background = AnimatedBackground('dark0.png', 'dark1.png')
+        else:
+            self.background = Background(bgname)
         for i in range(4):
             name = 'punch' + str(i) + '.wav'
             SpeedMode.attack_sounds.append(load_sound(name))
             SpeedMode.attack_sounds[i].set_volume(sound_volume)
+        self.color = (255,255,255)
+        if bgname == 'industrial.png':
+            self.color = (0,0,0)
+        self.pause = False
+        self.trans = False
         self.so_far = 0
-        self.bar = Bar('city')
+        self.bar = Bar()
         self.eason.run()
-        
+
+        self.alpha = 0
+        self.alpha_value = 20
+
+
+#         self.blob = None
+# >>>>>>> blob changes
+    
+    def setLevel(self, lv):
+        self.eason.reset()
+        self.eason.setLevel(lv)
+    
     def enter(self):
         ## initializations when entering this mode
         pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "beethoven_virus.ogg"))
         pygame.mixer.music.set_volume(bgm_volume)
         pygame.mixer.music.play(-1)
         pygame.mouse.set_visible(False)
-        self.eason.reset()
-        floor = Floor((0, Y + 80), (700, 2))
+        if self.infinite:
+            self.eason.reset()
+        self.bar.reset()
+        floor = Floor((0, Y + 80), (700, 2), self.color)
         self.floors = [floor]
         self.joes = []
         self.eason.run()
         self.so_far = 0
-        self.bar.reset()
         self.eason.update()
+        self.gameover = False
+        self.trans = False
+        self.pause = False
+        self.alpha = 0
+        self.img_trans = createBlankImage(size, False, (255, 255, 255))
         
     def exit(self):
         ## clean-ups when exiting
         pygame.mixer.music.stop()
         self.floors = []
         self.joes = []
-        pygame.mouse.set_visible(True)
     
     def key_down(self, event):
         ## check input events
         if event.key == K_ESCAPE:
-            self.switch_to_mode('menu_mode')
+            self.trans = True
+            self.gameover = True
         keys = pygame.key.get_pressed()
+        if keys[K_p]:
+            self.setPause()
+        if self.pause:
+            return
         if keys[K_SPACE]:
             self.eason.jump()
         if keys[K_j]:
@@ -75,7 +107,7 @@ class SpeedMode(GameMode):
         P = 0
         Q = 3 * l + 20
         new_floor = Floor((width + 1, Y + 80 + randint(-80, 80)), \
-                              (randint(50, 750), 2))
+                              (randint(50, 750), 2), self.color)
         vx = self.eason.v_x / 1.4
         vy = 7
         a = 0.3
@@ -144,10 +176,35 @@ class SpeedMode(GameMode):
             self.eason.gameOver()
             self.so_far += clock.get_time()
             if self.so_far > 3000:
+                self.gameover = True
                 self.switch_to_mode('menu_mode')
     
     ## update all the elements of this mode
+    
+    def setPause(self):
+        self.pause = not self.pause
+    
     def update(self, clock):
+        if self.pause:
+# <<<<<<< HEAD
+            if self.trans:
+                if not pygame.mixer.music.get_busy():
+                    self.switch_to_mode('menu_mode')
+                else:
+                    self.alpha += self.alpha_value
+                    if self.alpha > 255:
+                        self.alpha = 255
+                        self.alpha_value *= -1
+                    if self.alpha < 0:
+                        self.alpha = 0
+                        self.alpha_value *= -1
+# =======
+#             self.blob = Blob((0,0), 640)
+#             self.blob.update()
+#             if not pygame.mixer.music.get_busy():
+#                 self.switch_to_mode('menu_mode')
+# >>>>>>> blob changes
+            return 
         self.add_new_floor()
         self.out_of_sight()
         self.fall()
@@ -159,17 +216,40 @@ class SpeedMode(GameMode):
         for i in self.joes:
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
+
         self.bar.update(self.eason.level, self.eason.v_x / 3, self.eason.CDtimer.isStart())
+
+        frac = self.eason.CDtimer.getPercentage()
+        self.bar.update(self.eason.level, self.eason.v_x / 3, frac)
+        if not self.infinite and self.bar.dist > 500:
+            pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "transition.ogg"))
+            pygame.mixer.music.play(1)
+            self.trans = True
+            self.setPause()
+            #self.switch_to_mode('menu_mode')
+        if self.trans:
+            self.alpha += 3
+            if self.alpha > 255:
+                self.alpha = 255
+                self.switch_to_mode('menu_mode')
     ## draw elements onto the given screen
     def draw(self, screen):
         self.background.draw(screen)
         self.bar.draw(screen)
-        screen.blit(self.bar.image, self.bar.rect)
         for i in self.floors:
             screen.blit(i.image, i.rect)
         for i in self.joes:
             screen.blit(i.image, i.rect)
-        screen.blit(self.eason.image, self.eason.rect)
+        self.eason.draw(screen)
+
+        if self.trans:
+             img = self.img_trans
+             img.set_alpha(self.alpha)
+             screen.blit(img, (0, 0))
+# =======
+#         if self.blob != None:
+#             self.blob.draw(screen)
+# >>>>>>> blob changes
         pygame.display.flip()
         
         

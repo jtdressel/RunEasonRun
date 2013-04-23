@@ -26,6 +26,7 @@ class Eason(pygame.sprite.Sprite):
         #--------------------------INITIALIZATION------------------------------
         pygame.sprite.Sprite.__init__(self)
         self.images = loadSprites('eason0.png', -1, 80, 80)
+        levelup = loadSprites('levelup.png', -1, 80, 80)
         self.sound_jmp = load_sound('jump.wav')
         self.sound_atk = []
         self.sound_atk.append(load_sound('attack0.wav'))
@@ -52,6 +53,7 @@ class Eason(pygame.sprite.Sprite):
         self.cd = False
         self.exp = 0
         self.level = 1
+        self.dropDmg = False
         self.CDtimer = CDTimer(self.cd_time)
         
         #----------------------ANIMATIONS--------------------------------------
@@ -72,6 +74,8 @@ class Eason(pygame.sprite.Sprite):
         animList = [self.images[31], self.images[32], self.images[33], \
                     self.images[34]]
         self.anim_dead = Animation(animList, 30, False)
+        anim = [levelup[i] for i in range(15)]
+        self.anim_lvup = Animation(anim, 40, False)
         
         #-------------------------START----------------------------------------
         self.status = Eason.RUN
@@ -97,6 +101,10 @@ class Eason(pygame.sprite.Sprite):
             self.sound_levelup.play()
             self.setCDTime()
             self.setAtkRange()
+            self.displayLevelUp()
+    
+    def displayLevelUp(self):
+        self.anim_lvup.start()
     
     def expUp(self):
         self.exp += 1
@@ -122,6 +130,11 @@ class Eason(pygame.sprite.Sprite):
     def drop(self):
         if self.status == Eason.DEAD:
             return 
+        if self.CDtimer.isStart() and not self.CDtimer.timeUp():
+            self.dropDmg = False
+        else:
+            self.dropDmg = True
+            self.CDtimer.start()
         self.status = Eason.DROP
         self.a_y = DRP_ACC
         if not self.anim_DROP._start:
@@ -252,10 +265,14 @@ class Eason(pygame.sprite.Sprite):
     def hit(self, target):
         if self.status != Eason.ATK and self.status != Eason.DROP:
             return False
-        hitbox = self.rect.inflate(-30, -10)
-        return hitbox.colliderect(target.rect.inflate(-20, -5))
+        if self.status == Eason.DROP and not self.dropDmg:
+            return False
+        hitbox = pygame.Rect(self.x + 16, self.y + 24, 70, 56)
+        box = pygame.Rect(target.x + 29, target.y + 19, 24, 60)
+        return hitbox.colliderect(box)
     
     def update(self):
+        self.anim_lvup.update(pygame.time.get_ticks())
         if self.status == Eason.RUN:
             self.image = self.anim_run.image
             self.anim_run.update(pygame.time.get_ticks())
@@ -286,6 +303,11 @@ class Eason(pygame.sprite.Sprite):
         
         self.move()
         self.rect.topleft = self.x, self.y
+    
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+        if self.anim_lvup.started() and not self.anim_lvup.done():
+            screen.blit(self.anim_lvup.image, self.rect)
         
 
 class BrawlEason(Eason):
@@ -380,7 +402,7 @@ class BrawlEason(Eason):
     
     def getVelocity(self):
         self.v_x = self.velocity * self.vec.x
-        self.v_y = 0.8 * self.vec.y
+        self.v_y = self.velocity / 2.0 * self.vec.y
     
     def speedUp(self):
         self.velocity = v_r
@@ -392,21 +414,30 @@ class BrawlEason(Eason):
         self.kill_cnt += 1
     
     def expUp(self):
-        Eason.expUp(self)
+        self.exp += randint(1, 10) / 10.0
         self.killUp()
+        if self.exp >= int(self.level * difficulty):
+            self.levelUp()
+            self.exp = 0
     
     def levelUp(self):
         self.level += 1
         self.sound_levelup.play()
         self.max_HP += 50
-        self.max_mana += 20
+        self.max_mana += 5
         self.HP = self.max_HP
         self.mana = self.max_mana
+        self.displayLevelUp()
+    
+    def reset(self):
+        self.setLevel(1)
+        self.kill_cnt = 0
+        self.vec = EsVector(0,0)
     
     def setLevel(self, lv):
         self.level = lv
         self.max_HP = 500 + 50 * (lv - 1)
-        self.max_mana = 100 + 20 * (lv - 1)
+        self.max_mana = 100 + 5 * (lv - 1)
         self.HP = self.max_HP
         self.mana = self.max_mana
         self.exp = 0
@@ -440,6 +471,8 @@ class BrawlEason(Eason):
 
 
     def light_attack(self):
+        if self.isDead():
+            return 
         if self.cd_atk.isStart() and not self.cd_atk.timeUp():
             return 
         if self.status == BrawlEason.DEAD or self.status == BrawlEason.ATK:
@@ -447,16 +480,19 @@ class BrawlEason(Eason):
         else:
             if self.isFalling():
                 self.anim_atk = self.anim_jump_punch
+                self.damage = 10 + randint(-4, 4) + self.level
             else:
                 self.anim_atk = self.anim_punch[randint(0, 1)]
+                self.damage = 4 + randint(-4, 4) + self.level
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk[randint(0, 1)].play()
         self.status = BrawlEason.ATK
-        self.damage = 4 + randint(-4, 4) + self.level
         self.cd_atk.setTime(1)
         
     def heavy_attack(self):
+        if self.isDead():
+            return 
         if self.cd_atk.isStart() and not self.cd_atk.timeUp():
             return 
         if self.status == BrawlEason.DEAD or self.status == BrawlEason.ATK:
@@ -464,14 +500,14 @@ class BrawlEason(Eason):
         else:
             if self.isFalling():
                 self.anim_atk = self.anim_kick
+                self.damage = (15 + randint(-2, 2) + self.level) * 2
             else:
                 self.anim_atk = self.anim_heavy_attack
-            
+                self.damage = (4 + randint(-2, 2) + self.level) * 2
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk[randint(0, 1)].play()
         self.status = BrawlEason.ATK
-        self.damage = (4 + randint(-2, 2) + self.level) * 2
         self.cd_atk.setTime(100)
     
     def fireball(self):
@@ -551,7 +587,7 @@ class BrawlEason(Eason):
     def isDead(self):
         if self.HP <= 0:
             return True
-        return self.status == BrawlEason.DEAD
+        return False
     
     def isActing(self):
         if self.isBeaten():
@@ -574,12 +610,14 @@ class BrawlEason(Eason):
         self.attack_sounds[randint(0, 3)].play()
     
     def die(self):
+        if self.status == BrawlEason.DEAD:
+            return 
         self.status = BrawlEason.DEAD
     
-    def fucked(self, dir):
+    def fucked(self, dr):
         if self.status == BrawlEason.FFUCKED or self.status == BrawlEason.BFUCKED:
             return
-        self.status = dir
+        self.status = dr
         self.anim_fucked = self.anim_front_fucked
         if self.status == BrawlEason.BFUCKED:
             self.anim_fucked = self.anim_back_fucked
@@ -604,7 +642,7 @@ class BrawlEason(Eason):
             if self.HP < 0:
                 self.HP = 0
                 self.status = BrawlEason.DEAD
-            if self.dmg_taken < 50 * self.level and self.HP > 0:
+            if self.dmg_taken < 50 and self.HP > 0:
                 self.beaten()
             else:
                 if self.isLeft():
@@ -632,9 +670,9 @@ class BrawlEason(Eason):
             x = 45
             y = self.y + 36
             if self.direction == BrawlEason.LEFT:
-                x = 80 - x - 30
+                x = 80 - x - 35
             x += self.x
-            hitBox = pygame.Rect(x, y, 30, 11)
+            hitBox = pygame.Rect(x, y, 35, 11)
         
         ## ------------hitBox of kicks------------------
         if self.anim_atk.image == self.images[8] or\
@@ -654,16 +692,16 @@ class BrawlEason(Eason):
             x = 45
             y = self.y + 37
             if self.direction == BrawlEason.LEFT:
-                x = 80 - x - 30
+                x = 80 - x - 35
             x += self.x
-            hitBox = pygame.Rect(x, y, 30, 19)
+            hitBox = pygame.Rect(x, y, 35, 19)
         
         ## -------------hitBox of jump attacks--------------
         if self.anim_atk.image == self.images1[22] or self.anim_atk.image == self.images1[23]:
             x = 26
             y = self.y + 59
             if self.direction == BrawlEason.LEFT:
-                x = 80 - x - 13
+                x = 80 - x - 23
             x += self.x
             hitBox = pygame.Rect(x, y, 23, 11)
         
@@ -675,16 +713,17 @@ class BrawlEason(Eason):
         if self.isFucked():
             if self.anim_fucked._frame >= 4:
                 return 
+            push = randint(3, 6)
             if self.status == BrawlEason.FFUCKED:
                 if self.direction == BrawlEason.LEFT:
-                    self.x += 3
+                    self.x += push
                 else:
-                    self.x -= 3
+                    self.x -= push
             else:
                 if self.direction == BrawlEason.LEFT:
-                    self.x -= 3
+                    self.x -= push
                 else:
-                    self.x += 3
+                    self.x += push
             return 
         t = 1
         ver_dist = self.v * t + self.acc * t * t / 2
@@ -721,9 +760,18 @@ class BrawlEason(Eason):
         self.mana = self.max_mana
         self.deadFlag = False
     
+    def turn(self):
+        if self.isDead():
+            return 
+        if self.v_x > 0:
+            self.direction = BrawlEason.RIGHT
+        elif self.v_x < 0:
+            self.direction = BrawlEason.LEFT
+    
     def update(self):
         # Eason.update(self)
         ## ----------------------update animations------------------------
+        self.anim_lvup.update(pygame.time.get_ticks())
         if self.status == BrawlEason.RUN:
             self.image = self.anim_run.image
             self.anim_run.update(pygame.time.get_ticks())
@@ -774,13 +822,7 @@ class BrawlEason(Eason):
                 self.stand()
             self.cd_atk.start()
         
-        if self.v_x > 0:
-            self.direction = BrawlEason.RIGHT
-        elif self.v_x < 0:
-            self.direction = BrawlEason.LEFT
-        
-        
-        
+        self.turn()
         self.stepOn()
         self.getVelocity()
         self.move()
@@ -788,9 +830,6 @@ class BrawlEason(Eason):
             return 
         self.restore()
         self.rect.topleft = self.x, self.y
-    
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
 
 class SimpleEason():
     STAND, BEAT, RUN, FLY = range(4)
@@ -881,3 +920,6 @@ class SimpleEason():
         
         self.move()
         self.rect.topleft = self.x, self.y
+    
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)

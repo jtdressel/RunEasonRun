@@ -34,15 +34,18 @@ class BadGuy(pygame.sprite.Sprite):
 		self.v_x, self.v_y = 0, 0
 		self.a_x, self.a_y = 0, 0
 		self.width, self.height = 80, 80
-		self.status = None
+		self.status = BadGuy.STAND
 		self.level = level
 		self.direction = BadGuy.LEFT
 		self.upperBound, self.lowerBound = up , lo
 		self.damage = 0
 		self.cd_atk = CDTimer(100)
-		self.HP = 100 + 50 * (level - 1)
+		self.max_HP = 400 + 100 * (level - 1)
+		self.HP = self.max_HP
 		self.rect_body = pygame.Rect(0, 0, 27, 57)
 		self.cd_hit = CDTimer(20)
+		self.cd_action = CDTimer(200)
+		self.cd_action.start()
 		self.dmg_period = CDTimer(1000)
 		self.dmg_taken = 0
 		self.deadFlag = False
@@ -109,7 +112,8 @@ class BadGuy(pygame.sprite.Sprite):
 
 	def setLevel(self, lv):
 		self.level = lv
-		self.HP = 100 + 50 * (lv - 1)
+		self.max_HP = 500 + 100 * (lv - 1)
+		self.HP = self.max_HP
 
 	def walk(self):
 		if self.status == BadGuy.ATK:
@@ -130,7 +134,7 @@ class BadGuy(pygame.sprite.Sprite):
 		self.anim_atk.start()
 		self.sound_atk[randint(0, 1)].play()
 		self.status = BadGuy.ATK
-		self.damage = 3 + randint(-2, 2) + self.level
+		self.damage = 6 + randint(-2, 2) + self.level
 		self.cd_atk.setTime(500)
 
 	def stand(self):
@@ -199,6 +203,7 @@ class BadGuy(pygame.sprite.Sprite):
 		self.anim_fucked.reset()
 		self.anim_fucked.start()
 		self.attack_sounds[randint(0, 3)].play()
+		self.cd_action.start()
 
 	def hit(self, hitbox, damage, x):
 		if self.isDead():
@@ -217,7 +222,7 @@ class BadGuy(pygame.sprite.Sprite):
 			if self.HP < 0:
 				self.HP = 0
 				self.status = BadGuy.DEAD
-			if self.dmg_taken < 70 * self.level and self.HP > 0:
+			if self.dmg_taken < 50 + 5 * (self.level - 1) and self.HP > 0:
 				self.beaten()
 			else:
 				if self.isLeft():
@@ -249,26 +254,70 @@ class BadGuy(pygame.sprite.Sprite):
 		return hitBox
 	
 	def checkForTarget(self, target):
-		pass
+		if dist((self.x, self.y), (target.x, target.gnd_y)) <= self.eyeSight():
+			return True
+		return False
 		#returns if target is near in terms of x and y directions
-
-
-	def aiMove(self, target):
-		#horizontal = [v_w, -v_w]
-		#vertical = [0.8, -0.8]\
+	def withinRange(self, rg, target):
+		if dist((self.x, self.y), (target.x, target.gnd_y)) <= rg:
+			return True
+		return False
+	
+	def eyeSight(self):
+		dist = 200 + (self.level - 1) * 1.1
+		if self.HP < self.max_HP:
+			dist += 400
+		return dist
+	
+	def setTarget(self, x, y):
+		if x < 0:
+			x = 0
+		if y < self.upperBound - 80:
+			y = self.upperBound - 80
+		if x > width - 45:
+			x = width - 45
+		if y > self.lowerBound - 80:
+			y = self.lowerBound - 80
+		self.targetX = x; self.targetY = y
+	
+	def moveToTarget(self):
+		if self.cd_hit.isStart() and not self.cd_hit.timeUp():
+			return 
 		self.vec.reset(0, 0)
-		
-		if self.x < target.x:
+		if self.x < self.targetX:
 			self.moveRight()
-		if self.x > target.x:
+		if self.x > self.targetX:
 			self.moveLeft()
-		if self.y < target.y:
+		if self.y < self.targetY:
 			self.moveDown()
-		if self.y > target.y:
+		if self.y > self.targetY:
 			self.moveUp()
 	
+	def turnFace(self, target):
+		if self.isDead():
+			return 
+		if target.x < self.x:
+			self.direction = BadGuy.LEFT
+		elif target.x > self.x:
+			self.direction = BadGuy.RIGHT
+	
+	def aiMove(self, target):
+		self.turnFace(target)
+		if self.withinRange(48, target):
+			self.setTarget(self.x, self.y)
+			if self.cd_action.timeUp():
+				P = 50
+				if randint(1, 100) <= P:
+					self.attack()
+				self.cd_action.start()
+		elif self.checkForTarget(target):
+			self.setTarget(target.x, target.gnd_y)
+		else:
+			self.setTarget(self.x, self.y)
+		self.moveToTarget()
+	
 	def resurge(self):
-		self.HP = 100 + 50 * (self.level - 1)
+		self.HP = self.max_HP
 		self.deadFlag = False
 	
 	def move(self):
@@ -277,16 +326,17 @@ class BadGuy(pygame.sprite.Sprite):
 		if self.isFucked():
 			if self.anim_fucked._frame >= 4:
 				return
+			push = randint(3, 10)
 			if self.status == BadGuy.FFUCKED:
 				if self.direction == BadGuy.LEFT:
-					self.x += 3
+					self.x += push
 				else:
-					self.x -= 3
+					self.x -= push
 			else:
 				if self.direction == BadGuy.LEFT:
-					self.x -= 3
+					self.x -= push
 				else:
-					self.x += 3
+					self.x += push
 			return 
 		t = 1
 		s_x = self.v_x * t + self.a_x * t * t / 2
