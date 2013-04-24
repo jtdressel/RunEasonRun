@@ -120,4 +120,34 @@ Animation List:
         #    self.images[45], self.images[44], self.images[45], self.images[45], \
         #    self.images[45], self.images[45], self.images[45], self.images[45]]
         anim = [self.images1[6], self.images1[6], self.images1[6], self.images1[6], self.images1[6]]
-        self.anim_back_fucked = Animation(anim, 20, False)
+        self.anim_back_fucked = Animation(energy_charge_list, 20, False)
+
+    def aiMove(self, target):
+        self.turnFace(target)
+        if self.withinRange(48, target):
+            self.setTarget(self.x, self.y)
+            if self.cd_action.timeUp():
+                P = 50
+                if randint(1, 100) <= P:
+                    self.attack()
+                self.cd_action.start()
+        elif self.checkForTarget(target):
+            self.setTarget(target.x, target.gnd_y)
+        else:
+            self.setTarget(self.x, self.y)
+        self.moveToTarget()
+        
+    def attack(self):
+        if self.isDead():
+            return 
+        if self.cd_atk.isStart() and not self.cd_atk.timeUp():
+            return 
+        if self.status == BadGuy.DEAD or self.status == BadGuy.ATK:
+            return
+        self.anim_atk = self.anim_attack[randint(0, 1)]
+        self.anim_atk.reset()
+        self.anim_atk.start()
+        self.sound_atk[randint(0, 1)].play()
+        self.status = BadGuy.ATK
+        self.damage = 6 + randint(-2, 2) + self.level
+        self.cd_atk.setTime(500)
