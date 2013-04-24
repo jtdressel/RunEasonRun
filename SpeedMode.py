@@ -14,6 +14,7 @@ from Stupid import *
 from Bar import *
 from Background import *
 from Blob import *
+from random import *
 
 
 class SpeedMode(GameMode):
@@ -207,7 +208,7 @@ class SpeedMode(GameMode):
         self.background.update(-self.eason.s_x / 3)
         frac = self.eason.CDtimer.getPercentage()
         self.bar.update(self.eason.level, self.eason.v_x / 3, frac)
-        if not self.infinite and self.bar.dist > 500:
+        if not self.infinite and self.bar.dist > randint(2500,2999):
             pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "transition.ogg"))
             pygame.mixer.music.play(1)
             self.trans = True
