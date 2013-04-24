@@ -44,7 +44,7 @@ Animation List:
         pygame.sprite.Sprite.__init__(self)
         #filename = str((level-1) % 3) + '.png'
         self.images = loadSprites('julian_0.png', -1, 80, 100)
-        self.images1 = loadSprites('julian_1.png', -1, 80, 100)
+        self.images1 = loadSprites('julian_1.png', -1, 135, 118)
         self.imagesCol = loadSprites('julian_col.png', -1, 200, 405)
         self.images2 = loadSprites('julian_2.png', -1, 80, 100)        
         print self.images2.__len__()      
@@ -112,7 +112,7 @@ Animation List:
         #    self.images[35], self.images[34], self.images[35], self.images[35], \
         #    self.images[35], self.images[35], self.images[35], self.images[35]]
             
-        anim = [self.images1[3], self.images1[2], self.images1[1], self.images1[1], self.images1[1]]    
+        anim = [self.images1[2], self.images1[1], self.images1[0]]    
             
             
         self.anim_front_fucked = Animation(anim, 20, False)
