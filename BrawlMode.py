@@ -17,6 +17,7 @@ from Dennis import *
 from Firen import * 
 from Jack import *
 from Mark import *
+from Julian import *
 
 class BrawlMode(GameMode):
     FIGHT, VICTORY = range(2)
@@ -41,7 +42,7 @@ class BrawlMode(GameMode):
             x = (i % 2) * width - 40
             y = randint(self.upper_bound-80, self.lower_bound-80)
             lv = randint(1, maxLv)
-            self.baddy.append(Mark((x, y), self.upper_bound, self.lower_bound, lv))
+            self.baddy.append(Julian((x, y), self.upper_bound, self.lower_bound, lv))
             self.baddy[i].stand()
     
     def newBound(self, nu, nl):
