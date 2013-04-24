@@ -9,7 +9,7 @@ class Firen(BadGuy):
         print "stuff"
         pygame.sprite.Sprite.__init__(self)
         #filename = str((level-1) % 3) + '.png'
-        self.images = loadSprites('dennis_0.png', -1, 80, 80)
+        self.images = loadSprites('firen_0.png', -1, 80, 80)
         self.rect = self.images[0].get_rect()
         self.attack_sounds = []
         for i in range(4):
