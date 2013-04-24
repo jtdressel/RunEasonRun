@@ -44,9 +44,9 @@ Animation List:
         pygame.sprite.Sprite.__init__(self)
         #filename = str((level-1) % 3) + '.png'
         self.images = loadSprites('julian_0.png', -1, 80, 100)
-        self.images1 = loadSprites('julian_1.png', -1, 135, 118)
+        
         self.imagesCol = loadSprites('julian_col.png', -1, 200, 405)
-        self.images2 = loadSprites('julian_2.png', -1, 80, 100)        
+        self.images2 = loadSprites('julian_2.png', -1, 80, 100)
         print self.images2.__len__()      
         self.rect = self.images[0].get_rect()
         self.attack_sounds = []
@@ -92,7 +92,14 @@ Animation List:
         uppercut_punch = [self.images[19],self.images[18]]
         punch_list = [self.images[20],self.images[17], self.images[18], self.images[19]]
 
-        self.anim_stand = Animation(standing_list , 10, True)
+        self.images1 = loadSprites('julian_1-b.png', -1, 100, 100)
+        self.images1_2 = loadSprites('julian_1-c.png', -1, 100, 100)
+        self.images1_1 = loadSprites('julian_1-b.png', -1, 100, 100)
+        self.images1_0 = loadSprites('julian_1.png', -1, 140, 118)# works for zero
+        anim_front = [self.images1_0[0],self.images1_1[0],self.images1_2[0]]#inefecient, but dealing wiht a malformed sprite sheet
+        #self.anim_stand = Animation(standing_list , 10, True)
+        self.anim_front_fucked = Animation(anim_front, 20, False)
+        self.anim_stand = Animation(standing_list, 10, True)
         self.anim_attack = []
         self.anim_attack.append(Animation(uppercut_punch, 10, False))
         
@@ -108,18 +115,10 @@ Animation List:
         self.anim_beaten.append(Animation(anim, 24, False))
         
         
-        #anim = [self.images[39], self.images[38], self.images[37], self.images[36], \
-        #    self.images[35], self.images[34], self.images[35], self.images[35], \
-        #    self.images[35], self.images[35], self.images[35], self.images[35]]
             
-        anim = [self.images1[2], self.images1[1], self.images1[0]]    
-            
-            
-        self.anim_front_fucked = Animation(anim, 20, False)
-        #anim = [self.images[49], self.images[48], self.images[47], self.images[46], \
-        #    self.images[45], self.images[44], self.images[45], self.images[45], \
-        #    self.images[45], self.images[45], self.images[45], self.images[45]]
-        anim = [self.images1[6], self.images1[6], self.images1[6], self.images1[6], self.images1[6]]
+
+
+        #anim = [self.images1[6], self.images1[6], self.images1[6], self.images1[6], self.images1[6]]
         self.anim_back_fucked = Animation(energy_charge_list, 20, False)
 
     def aiMove(self, target):
@@ -129,7 +128,7 @@ Animation List:
             if self.cd_action.timeUp():
                 P = 50
                 if randint(1, 100) <= P:
-                    self.attack()
+                    pass#self.attack()
                 self.cd_action.start()
         elif self.checkForTarget(target):
             self.setTarget(target.x, target.gnd_y)
