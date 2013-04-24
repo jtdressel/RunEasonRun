@@ -130,7 +130,7 @@ Animation List:
             if self.cd_action.timeUp():
                 P = 50
                 if randint(1, 100) <= P:
-                    pass#self.attack()
+                    self.attack()
                 self.cd_action.start()
         elif self.checkForTarget(target):
             self.setTarget(target.x, target.gnd_y)
@@ -145,7 +145,8 @@ Animation List:
             return 
         if self.status == BadGuy.DEAD or self.status == BadGuy.ATK:
             return
-        self.anim_atk = self.anim_attack[randint(0, 1)]
+        #self.anim_atk = self.anim_attack[randint(0, 1)]
+        self.anim_atk = self.anim_energy_punch
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk[randint(0, 1)].play()
