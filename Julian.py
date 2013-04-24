@@ -101,6 +101,7 @@ Animation List:
         #self.anim_stand = Animation(standing_list , 10, True)
         self.anim_front_fucked = Animation(anim_front, 20, False)
         self.anim_stand = Animation(standing_list, 10, True)
+        self.anim_energy_punch = Animation(energy_punch_list, 10, True)
         self.anim_attack = []
         self.anim_attack.append(Animation(uppercut_punch, 10, False))
         
