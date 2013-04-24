@@ -13,7 +13,6 @@ from Floor import *
 from Stupid import *
 from Bar import *
 from Background import *
-from Blob import *
 
 
 class SpeedMode(GameMode):
@@ -205,23 +204,19 @@ class SpeedMode(GameMode):
         for i in self.joes:
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
-
-        self.bar.update(self.eason.level, self.eason.v_x / 3, self.eason.CDtimer.isStart())
-
         frac = self.eason.CDtimer.getPercentage()
         self.bar.update(self.eason.level, self.eason.v_x / 3, frac)
-        if not self.infinite and self.bar.dist > 500:
+        if not self.infinite and self.bar.dist > 7500:
             pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "transition.ogg"))
             pygame.mixer.music.play(1)
             self.trans = True
             self.setPause()
-
-            #self.switch_to_mode('menu_mode')
         if self.trans:
             self.alpha += 3
             if self.alpha > 255:
                 self.alpha = 255
                 self.switch_to_mode('menu_mode')
+    
     ## draw elements onto the given screen
     def draw(self, screen):
         self.background.draw(screen)
@@ -233,10 +228,9 @@ class SpeedMode(GameMode):
         self.eason.draw(screen)
 
         if self.trans:
-             img = self.img_trans
-             img.set_alpha(self.alpha)
-             screen.blit(img, (0, 0))
-
+            img = self.img_trans
+            img.set_alpha(self.alpha)
+            screen.blit(img, (0, 0))
         pygame.display.flip()
         
         
