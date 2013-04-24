@@ -24,7 +24,10 @@ class BrawlMode(GameMode):
     def __init__(self, name, upper, lower, infinite = False):
         GameMode.__init__(self)
         self.infinite = infinite
-        if name == 'finalboss0.png':
+        if self.infinite == True:
+            self.background = Background('arena.png')
+            self.spriteFile = BrawlEnemies['arena.png']
+        elif name == 'finalboss0.png':
             self.background = AnimatedBackground('finalboss0.png', 'finalboss1.png')
             self.spriteFile = 'julian'
         else:
@@ -44,10 +47,11 @@ class BrawlMode(GameMode):
         self.baddy = []
         if self.spriteFile != 'julian':
             for i in range(numEnemy):
+                j = randint(0,len(self.spriteFile)-1)
                 x = (i % 2) * width - 40
                 y = randint(self.upper_bound-80, self.lower_bound-80)
                 lv = randint(1, maxLv)
-                self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv, self.spriteFile))
+                self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv, self.spriteFile[j]))
                 self.baddy[i].stand()
         else:
             x = width - 40
