@@ -8,7 +8,7 @@ from EsAnimation import *
 from EsSounds import *
 from EsTimer import *
 from EsFunctions import *
-
+from random import choice
 class BadGuy(pygame.sprite.Sprite):
     """STATUS"""
     WALK, ATK, DEAD, BEATEN, STAND, FFUCKED, BFUCKED = range(7)
@@ -18,7 +18,9 @@ class BadGuy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         #filename = str((level-1) % 3) + '.png'
         #mark_0_a.png mark_0_b.png dennis_0.png firen_0.png jack_0.png
-        self.images = loadSprites('mark_0_a.png', -1, 80, 80)
+        joe_color_choices = ['0_blue_bandana.png','0_green_bandana.png','0_orange_bandana.png','0_red_bandana.png'] 
+        all_choices = ['mark_0_a.png', 'mark_0_b.png', 'dennis_0.png', 'firen_0.png', 'jack_0.png']+ joe_color_choices
+        self.images = loadSprites(choice(all_choices), -1, 80, 80)
         self.rect = self.images[0].get_rect()
         self.attack_sounds = []
         for i in range(4):
