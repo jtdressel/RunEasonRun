@@ -15,7 +15,9 @@ class Bar():
         self.dist = 0
         Bar.digits = loadSprites('digits.png', -1, 26, 42)
         m = loadSprites('M.png', -1, 32, 42)
+        c = loadSprites('C.png', -1, 30, 37)
         Bar.M = m[0]
+        Bar.C = c[0]
         level = loadSprites('level.png', -1, 88, 42)
         Bar.img_lv = level[0]
         Bar.cd = cdBar((40, 370))

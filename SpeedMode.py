@@ -205,6 +205,9 @@ class SpeedMode(GameMode):
         for i in self.joes:
             i.update(-self.eason.s_x)
         self.background.update(-self.eason.s_x / 3)
+
+        self.bar.update(self.eason.level, self.eason.v_x / 3, self.eason.CDtimer.isStart())
+
         frac = self.eason.CDtimer.getPercentage()
         self.bar.update(self.eason.level, self.eason.v_x / 3, frac)
         if not self.infinite and self.bar.dist > 500:
@@ -219,8 +222,6 @@ class SpeedMode(GameMode):
             if self.alpha > 255:
                 self.alpha = 255
                 self.switch_to_mode('menu_mode')
-
-    
     ## draw elements onto the given screen
     def draw(self, screen):
         self.background.draw(screen)

@@ -309,6 +309,7 @@ class Eason(pygame.sprite.Sprite):
         if self.anim_lvup.started() and not self.anim_lvup.done():
             screen.blit(self.anim_lvup.image, self.rect)
         
+
 class BrawlEason(Eason):
     WALK, RUN, JUMP, ATK, DEAD, BEATEN, STAND, FFUCKED, BFUCKED = range(9)
     RIGHT, LEFT = range(2)
