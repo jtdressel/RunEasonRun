@@ -25,7 +25,7 @@ class AboutMode(GameMode):
     def enter(self):
         self.x, self.y = 0, 0
         self.gameover = False
-        pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, 'victory.ogg'))
+        pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, 'victory.mp3'))
         pygame.mixer.music.play()
         self.mask = createBlankImage(size, False, (255, 255, 255))
         self.alpha_value = 0
