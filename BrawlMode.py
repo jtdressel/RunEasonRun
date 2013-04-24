@@ -52,6 +52,7 @@ class BrawlMode(GameMode):
                 y = randint(self.upper_bound-80, self.lower_bound-80)
                 lv = randint(1, maxLv)
                 self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv, self.spriteFile[j]))
+                #self.baddy.append(Julian((x, y), self.upper_bound, self.lower_bound, lv ))
                 self.baddy[i].stand()
         else:
             x = width - 40

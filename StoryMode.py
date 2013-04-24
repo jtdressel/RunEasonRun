@@ -34,7 +34,7 @@ class StoryMode(GameMode):
                 return 
             if self.mode_name[self.ptr] != 'credit':
                 self.level = self.lst_mode[self.ptr].eason.level
-        self.ptr += 1
+        self.ptr += 7
         if self.ptr > 7:
             self.switch_to_mode('menu_mode')
             self.ptr = 0

@@ -46,8 +46,7 @@ Animation List:
         self.images = loadSprites('julian_0.png', -1, 80, 100)
         
         self.imagesCol = loadSprites('julian_col.png', -1, 200, 405)
-        self.images2 = loadSprites('julian_2.png', -1, 80, 100)
-        print self.images2.__len__()      
+        self.images2 = loadSprites('julian_2.png', -1, 80, 100)    
         self.rect = self.images[0].get_rect()
         self.attack_sounds = []
         for i in range(4):
