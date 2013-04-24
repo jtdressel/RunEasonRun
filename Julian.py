@@ -83,7 +83,6 @@ Animation List:
         self.velocity = v_w
         
         #-----------------------ANIMATIONS-------------------------------------
-        animList = [self.images2[49],self.images2[48],self.images2[47],self.images2[45]]
         energy_charge_list = [self.images2[39],self.images2[38],self.images2[37],self.images2[46],self.images2[45],self.images2[44]]
         #animList = [self.images1[6], self.images1[6], self.images1[6], self.images1[6], self.images1[6]] 
         energy_uppercut_list=[self.images2[32],self.images2[31],self.images2[30]]
