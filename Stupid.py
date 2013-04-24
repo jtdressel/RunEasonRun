@@ -16,7 +16,7 @@ from EsTimer import *
 from random import choice
 class Stupid(pygame.sprite.Sprite):
     STAND, ATK, DEAD = range(3)
-    def __init__(self, pos):
+    def __init__(self, pos, spriteFile = '0.png'):
         #-----------------------INITIALIZATION---------------------------------
         pygame.sprite.Sprite.__init__(self)
         joe_color_choices = ['0_blue_bandana.png','0_green_bandana.png','0_orange_bandana.png','0_red_bandana.png']
@@ -24,13 +24,13 @@ class Stupid(pygame.sprite.Sprite):
         firen_color_choices = ['firen_0.png']
         jack_color_choices = ['jack_0.png']
         mark_color_choices = ['mark_0_a.png','mark_0_b.png']
-        all_choices = joe_color_choices + dennis_color_choices + firen_color_choices + jack_color_choices + mark_color_choices 
-        self.images = loadSprites(choice(all_choices), -1, 80, 80)
+
         #self.images = loadSprites(choice(mark_color_choices), -1, 80, 80)
         #self.images = loadSprites(choice(jack_color_choices), -1, 80, 80)
         #self.images = loadSprites(choice(firen_color_choices), -1, 80, 80)
         #self.images = loadSprites(choice(dennis_color_choices), -1, 80, 80)
         #self.images = loadSprites(choice(joe_color_choices), -1, 80, 80)
+        self.images = loadSprites(spriteFile, -1, 80, 80)
         self.rect = self.images[0].get_rect()
         
         #-----------------------ATTRIBUTES-------------------------------------
