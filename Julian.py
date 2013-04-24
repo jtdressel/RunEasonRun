@@ -91,6 +91,7 @@ Animation List:
         uppercut_list = [self.images[28],self.images[27],self.images[26]]
         uppercut_punch = [self.images[19],self.images[18]]
         punch_list = [self.images[20],self.images[17], self.images[18], self.images[19]]
+        laser_list = [self.imagesCol[3],self.imagesCol[2],self.imagesCol[1],self.imagesCol[0]]
 
         self.images1 = loadSprites('julian_1-b.png', -1, 100, 100)
         self.images1_2 = loadSprites('julian_1-c.png', -1, 100, 100)
