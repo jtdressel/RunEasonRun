@@ -42,7 +42,7 @@ class BrawlMode(GameMode):
             x = (i % 2) * width - 40
             y = randint(self.upper_bound-80, self.lower_bound-80)
             lv = randint(1, maxLv)
-            self.baddy.append(Julian((x, y), self.upper_bound, self.lower_bound, lv))
+            self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv))
             self.baddy[i].stand()
     
     def newBound(self, nu, nl):
