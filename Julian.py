@@ -84,7 +84,6 @@ Animation List:
         
         #-----------------------ANIMATIONS-------------------------------------
         energy_charge_list = [self.images2[39],self.images2[38],self.images2[37],self.images2[46],self.images2[45],self.images2[44]]
-        #animList = [self.images1[6], self.images1[6], self.images1[6], self.images1[6], self.images1[6]] 
         energy_uppercut_list=[self.images2[32],self.images2[31],self.images2[30]]
         energy_punch_list=[self.images2[29],self.images2[28],self.images2[27]]
         waling_list  = [self.images[3], self.images[4], self.images[5]]
