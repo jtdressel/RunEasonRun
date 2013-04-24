@@ -105,7 +105,7 @@ Animation List:
         
         self.anim_attack.append(Animation(punch_list, 10, False))
 
-        
+        self.anim_energy_punch = Animation(energy_punch_list, 10, True)
         self.anim_walk = Animation(waling_list, 10, True)
 
         self.anim_beaten = []
@@ -128,14 +128,13 @@ Animation List:
             if self.cd_action.timeUp():
                 P = 50
                 if randint(1, 100) <= P:
-                    pass#self.attack()
+                    self.attack()
                 self.cd_action.start()
         elif self.checkForTarget(target):
             self.setTarget(target.x, target.gnd_y)
         else:
             self.setTarget(self.x, self.y)
         self.moveToTarget()
-        
     def attack(self):
         if self.isDead():
             return 
@@ -143,10 +142,35 @@ Animation List:
             return 
         if self.status == BadGuy.DEAD or self.status == BadGuy.ATK:
             return
-        self.anim_atk = self.anim_attack[randint(0, 1)]
+        if (self.HP >=self.max_HP):# punch, uppercut
+            self.damage = 6 + randint(-2, 2) + self.level
+            self.anim_atk = self.anim_attack[randint(0, 1)]
+        elif(self.HP >=(self.max_HP/2)):# punch, uppercut, energy punch, energy uppercut
+            self.damage = 12 + randint(-2, 2) + self.level
+            self.anim_atk = self.anim_energy_punch
+        else:#energy beam attack,  punch, uppercut, energy punch, energy uppercut
+            self.damage = 12 + randint(-2, 2) + self.level
+            self.anim_atk = self.anim_energy_punch
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk[randint(0, 1)].play()
         self.status = BadGuy.ATK
-        self.damage = 6 + randint(-2, 2) + self.level
+        
         self.cd_atk.setTime(500)
+        
+        
+    def getHitBox(self):
+        if self.status != BadGuy.ATK:
+            return None
+        hitBox = None
+        
+        if self.anim_atk.image == self.images2[27] or self.anim_atk.image == self.images2[26]\
+        or self.anim_atk.image == self.images[16] or self.anim_atk.image == self.images[18]:
+            x = 1
+            y = 35 + self.y
+            if self.isRight():
+                x = 80 - x - 12
+            x += self.x
+            hitBox = pygame.Rect(x, y, 12, 9)
+        
+        return hitBox
