@@ -24,7 +24,9 @@ class Stupid(pygame.sprite.Sprite):
         firen_color_choices = ['firen_0.png']
         jack_color_choices = ['jack_0.png']
         mark_color_choices = ['mark_0_a.png','mark_0_b.png']
-        self.images = loadSprites(choice(mark_color_choices), -1, 80, 80)
+        all_choices = joe_color_choices + dennis_color_choices + firen_color_choices + jack_color_choices + mark_color_choices 
+        self.images = loadSprites(choice(all_choices), -1, 80, 80)
+        #self.images = loadSprites(choice(mark_color_choices), -1, 80, 80)
         #self.images = loadSprites(choice(jack_color_choices), -1, 80, 80)
         #self.images = loadSprites(choice(firen_color_choices), -1, 80, 80)
         #self.images = loadSprites(choice(dennis_color_choices), -1, 80, 80)
