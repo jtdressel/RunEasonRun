@@ -90,16 +90,13 @@ Animation List:
         standing_list=[self.images[6],self.images[7],self.images[8]]
         uppercut_list = [self.images[28],self.images[27],self.images[26]]
         uppercut_punch = [self.images[19],self.images[18]]
-        
-        self.anim_stand = Animation(standing_list , 10, True)
+        punch_list = [self.images[20],self.images[17], self.images[18], self.images[19]]
 
+        self.anim_stand = Animation(standing_list , 10, True)
         self.anim_attack = []
-        
-        animList = [self.images[20],self.images[17], self.images[18], self.images[19]]
         self.anim_attack.append(Animation(uppercut_punch, 10, False))
         
-        animList = [self.images[20], self.images[20]]
-        self.anim_attack.append(Animation(animList, 10, False))
+        self.anim_attack.append(Animation(punch_list, 10, False))
 
         
         self.anim_walk = Animation(waling_list, 10, True)
