@@ -26,8 +26,10 @@ class BrawlMode(GameMode):
         self.infinite = infinite
         if name == 'finalboss0.png':
             self.background = AnimatedBackground('finalboss0.png', 'finalboss1.png')
+            self.spriteFile = 'julian'
         else:
             self.background = Background(name)
+            self.spriteFile = BrawlEnemies[name]
         self.upper_bound, self.lower_bound = upper, lower
         self.eason = BrawlEason(pos, upper, lower)
         self.eason.stand()
@@ -35,16 +37,25 @@ class BrawlMode(GameMode):
         self.bar = BrawlBar(infinite)
         self.so_far = 0
         self.status = BrawlMode.FIGHT
+
+        
         #badguy1
     def spawn_enemy(self, numEnemy, maxLv):
         self.baddy = []
-        for i in range(numEnemy):
-            x = (i % 2) * width - 40
+        if self.spriteFile != 'julian':
+            for i in range(numEnemy):
+                x = (i % 2) * width - 40
+                y = randint(self.upper_bound-80, self.lower_bound-80)
+                lv = randint(1, maxLv)
+                self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv, self.spriteFile))
+                self.baddy[i].stand()
+        else:
+            x = width - 40
             y = randint(self.upper_bound-80, self.lower_bound-80)
             lv = randint(1, maxLv)
-            self.baddy.append(BadGuy((x, y), self.upper_bound, self.lower_bound, lv))
-            self.baddy[i].stand()
-    
+            self.baddy.append(Julian((x, y), self.upper_bound, self.lower_bound, lv ))
+            self.baddy[0].stand()
+
     def newBound(self, nu, nl):
         self.eason.newBound(nu, nl)
     

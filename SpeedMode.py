@@ -42,6 +42,8 @@ class SpeedMode(GameMode):
 
         self.alpha = 0
         self.alpha_value = 20
+
+        self.spriteFile = SpeedEnemies[bgname]
     
     def setLevel(self, lv):
         self.eason.reset()
@@ -125,7 +127,7 @@ class SpeedMode(GameMode):
             if randint(1, 100) <= Q and new_floor.width > 80:
                 self.joes.append(Stupid((new_floor.x + \
                                         randint(0, new_floor.width - 80), \
-                                        new_floor.y - 80)))
+                                        new_floor.y - 80), self.spriteFile ))
     
     ## supporting method
     def out_of_sight(self):
@@ -210,7 +212,7 @@ class SpeedMode(GameMode):
 
         frac = self.eason.CDtimer.getPercentage()
         self.bar.update(self.eason.level, self.eason.v_x / 3, frac)
-        if not self.infinite and self.bar.dist > 500:
+        if not self.infinite and self.bar.dist > 200:
             pygame.mixer.music.load(os.path.join(kSrcDir, dirBGM, "transition.ogg"))
             pygame.mixer.music.play(1)
             self.trans = True
