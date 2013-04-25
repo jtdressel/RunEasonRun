@@ -29,7 +29,7 @@ def loadIcon(name):
     return image
 
 def main():
-    ## initialize pygame
+    ## initialize pygames
     pygame.init()
     pygame.display.set_icon(loadIcon('icon.png'))
     screen = pygame.display.set_mode(size)
