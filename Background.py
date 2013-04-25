@@ -12,6 +12,7 @@ background.
 '''
 from root import *
 from EsImage import *
+from EsSounds import *
 
 class Background():
     def __init__(self, name):
@@ -51,6 +52,10 @@ class AnimatedBackground(Background):
         P = 5
         if randint(1, 1000) <= P:
             self.image = self.images[1]
+            # print "boom!"
+            # sound_thunder = load_sound('ThunderRumble.mp3')
+            # sound_thunder.set_volume(sound_volume)
+            # sound_thunder.play()
         else:
             self.image = self.images[0]
     
