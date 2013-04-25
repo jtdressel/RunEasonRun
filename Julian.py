@@ -106,6 +106,7 @@ Animation List:
         self.anim_attack.append(Animation(punch_list, 10, False))
 
         self.anim_energy_punch = Animation(energy_punch_list, 10, True)
+        self.anim_energy_uppercut = Animation(energy_uppercut_list, 10, True)
         self.anim_walk = Animation(waling_list, 10, True)
 
         self.anim_beaten = []
@@ -146,8 +147,10 @@ Animation List:
             self.damage = 6 + randint(-2, 2) + self.level
             self.anim_atk = self.anim_attack[randint(0, 1)]
         elif(self.HP >=(self.max_HP/2)):# punch, uppercut, energy punch, energy uppercut
-            self.damage = 12 + randint(-2, 2) + self.level
-            self.anim_atk = self.anim_energy_punch
+           self.damage = 12 + randint(-2, 2) + self.level
+           # self.anim_atk = self.anim_energy_punch
+           self.anim_atk = self.anim_energy_uppercut
+           
         else:#energy beam attack,  punch, uppercut, energy punch, energy uppercut
             self.damage = 12 + randint(-2, 2) + self.level
             self.anim_atk = self.anim_energy_punch
@@ -165,7 +168,8 @@ Animation List:
         hitBox = None
         
         if self.anim_atk.image == self.images2[27] or self.anim_atk.image == self.images2[26]\
-        or self.anim_atk.image == self.images[16] or self.anim_atk.image == self.images[18]:
+        or self.anim_atk.image == self.images[16] or self.anim_atk.image == self.images[18]\
+        or self.anim_atk.image == self.images2[31] or self.anim_atk.image ==self.images2[30]:
             x = 1
             y = 35 + self.y
             if self.isRight():
