@@ -202,3 +202,14 @@ Animation List:
             hitBox = pygame.Rect(x, y, 12, 9)
         
         return hitBox
+        
+        
+    def withinRange(self, rg, target):
+        if dist((self.x, self.y), (target.x, target.gnd_y)) <= rg:
+            return True
+        return False
+    def eyeSight(self):
+        dist = 11200 + (self.level - 1) * 1.1
+        if self.HP < self.max_HP:
+            dist += 400
+        return dist
