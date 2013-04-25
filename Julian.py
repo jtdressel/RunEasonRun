@@ -4,6 +4,7 @@ Julian class will include attributes and methods for enemies and AI control of t
 Children of Julian class will have additional abilities not containted in Julian
 """
 from BadGuy import *
+from random import *
 class Julian(BadGuy):
     '''
 Fight Script:
@@ -89,7 +90,6 @@ Animation List:
         waling_list  = [self.images[3], self.images[4], self.images[5]]
         standing_list=[self.images[6],self.images[7],self.images[8]]
         uppercut_list = [self.images[28],self.images[27],self.images[26]]
-        uppercut_punch = [self.images[19],self.images[18]]
         punch_list = [self.images[20],self.images[17], self.images[18], self.images[19]]
 
         self.images1 = loadSprites('julian_1-b.png', -1, 100, 100)
@@ -101,12 +101,18 @@ Animation List:
         self.anim_front_fucked = Animation(anim_front, 20, False)
         self.anim_stand = Animation(standing_list, 10, True)
         self.anim_attack = []
-        self.anim_attack.append(Animation(uppercut_punch, 10, False))
         
-        self.anim_attack.append(Animation(punch_list, 10, False))
+        
+        self.anim_attack_punch = Animation(uppercut_list, 10, False)
+        self.anim_uppercut = Animation(uppercut_punch, 10, False)
+        self.anim_attack.append(self.anim_attack_punch)
+        self.anim_attack.append(self.anim_uppercut)
+        self.anim_energy_attack = []
+        self.anim_energy_attack.append(Animation(energy_punch_list, 10, False))
+        self.anim_energy_attack.append(Animation(energy_uppercut_list, 10, False))
+        self.anim_second_stage_attack = self.anim_energy_attack + self.anim_attack
+        
 
-        self.anim_energy_punch = Animation(energy_punch_list, 10, True)
-        self.anim_energy_uppercut = Animation(energy_uppercut_list, 10, True)
         self.anim_walk = Animation(waling_list, 10, True)
 
         self.anim_beaten = []
@@ -144,16 +150,34 @@ Animation List:
         if self.status == BadGuy.DEAD or self.status == BadGuy.ATK:
             return
         if (self.HP >=self.max_HP):# punch, uppercut
+            
             self.damage = 6 + randint(-2, 2) + self.level
             self.anim_atk = self.anim_attack[randint(0, 1)]
         elif(self.HP >=(self.max_HP/2)):# punch, uppercut, energy punch, energy uppercut
-           self.damage = 12 + randint(-2, 2) + self.level
-           # self.anim_atk = self.anim_energy_punch
-           self.anim_atk = self.anim_energy_uppercut
+            
+            self.anim_atk = self.anim_second_stage_attack[randint(0, 3)]
+            if(self.anim_atk == self.anim_attack_punch or self.anim_atk == self.anim_uppercut):
+                self.damage = 7 + randint(-2,2) + self.level#normal attack
+            else:
+                #energy attack
+                self.damage = 12 + randint(-2,2) + self.level
+        #    i = randint(0,6)
+        #    if(i == 5):
+        #        #energy punch
+        #        self.damage = 12 + randint(-2, 2) + self.level
+        #        self.anim_atk = self.anim_energy_punch
+        #    elif(i == 4):
+        #        #energy uppercut
+        #        self.damage = 12 + randint(-2, 2) + self.level
+        #        self.anim_atk = self.anim_energy_uppercut
+        #    else:
+        #        #regular attacks
+        #        self.damage = 6 + randint(-2, 2) + self.level
+        #        self.anim_atk = self.anim_attack[randint(0, 1)]
            
         else:#energy beam attack,  punch, uppercut, energy punch, energy uppercut
-            self.damage = 12 + randint(-2, 2) + self.level
-            self.anim_atk = self.anim_energy_punch
+            self.damage = 12 + randint(-2,2) + self.level
+            self.anim_atk = self.anim_energy_attack[randint(0, 1)]
         self.anim_atk.reset()
         self.anim_atk.start()
         self.sound_atk[randint(0, 1)].play()
