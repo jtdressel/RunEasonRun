@@ -102,7 +102,7 @@ Animation List:
         self.anim_attack = []
         
         
-        self.anim_attack_punch = Animation(uppercut_list, 10, False)
+        self.anim_attack_punch = Animation(punch_list, 10, False)
         self.anim_uppercut = Animation(punch_list, 10, False)
         self.anim_attack.append(self.anim_attack_punch)
         self.anim_attack.append(self.anim_uppercut)
