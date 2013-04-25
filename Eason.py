@@ -49,7 +49,7 @@ class Eason(pygame.sprite.Sprite):
         self.atk_range = 200
         self.v_x, self.v_y = 3, 0
         self.a_x, self.a_y = 0, 0
-        self.cd_time = 1900
+        self.cd_time = 1700
         self.cd = False
         self.exp = 0
         self.level = 1
