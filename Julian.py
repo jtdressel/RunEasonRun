@@ -169,7 +169,7 @@ Animation List:
         
         if self.anim_atk.image == self.images2[27] or self.anim_atk.image == self.images2[26]\
         or self.anim_atk.image == self.images[16] or self.anim_atk.image == self.images[18]\
-        or self.anim_atk.image == self.images2[31] or self.anim_atk.image ==self.images2[30]:
+        or self.anim_atk.image == self.images2[31] or self.anim_atk.image == self.images2[30]:
             x = 1
             y = 35 + self.y
             if self.isRight():
