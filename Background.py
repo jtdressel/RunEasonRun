@@ -15,7 +15,9 @@ from EsImage import *
 from EsSounds import *
 
 class Background():
+    
     def __init__(self, name):
+        
         self.images = [0, 0]
         self.images[0] = loadImage(name, None)
         self.images[1] = self.images[0]
@@ -47,15 +49,15 @@ class AnimatedBackground(Background):
     def __init__(self, name1, name2):
         self.images = [loadImage(name1, None), loadImage(name2, None)]
         self.image = self.images[0]
+        self.sound_thunder = load_sound('ThunderRumble.wav')
+        pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         
     def update(self, x):
         P = 5
         if randint(1, 1000) <= P:
             self.image = self.images[1]
-            # print "boom!"
-            # sound_thunder = load_sound('ThunderRumble.mp3')
-            # sound_thunder.set_volume(sound_volume)
-            # sound_thunder.play()
+            self.sound_thunder.set_volume(sound_volume)
+            self.sound_thunder.play()
         else:
             self.image = self.images[0]
     
