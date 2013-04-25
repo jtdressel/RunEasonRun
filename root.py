@@ -35,8 +35,8 @@ SpeedEnemies = {'city.png': '0.png', \
 				'pipe.png': '0.png'
 				 }
 
-BrawlEnemies = {'street.png': ['0.png'], \
-				'warehouse.png': ['mark_0_a.png'], \
+BrawlEnemies = {'street.png': ['0.png', '0_blue_bandana.png', '0_green_bandana.png'], \
+				'warehouse.png': ['mark_0_a.png', 'mark_0_b.png'], \
 				'finalboss0.png': ['julian'], \
 				'arena.png': ['0.png', '0_blue_bandana.png', '0_green_bandana.png', \
 							'0_orange_bandana.png', '0_red_bandana.png'\
