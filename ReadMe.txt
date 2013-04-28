@@ -30,6 +30,26 @@ Controls:
 
 Space: jump. Allows double jump when Eason is in the air
 
-K: drop onto the floors fast
+k: drop onto the floors fast
 
-A: Eason rushes to the front and attacks the enimies
+j: Eason rushes to the front and attacks the enimies
+
+
+wasd: Movement in brawl mode
+
+j: punch in brawl mode
+
+k: multi-punch in brawl mode
+
+j+k: energy attack in brawl mode
+
+
+Attribution
+LittleFighters2
+Battleheart
+Bleach DS4th
+Loli vs the Headmaster
+Pokemon FireRed
+Sonata Pathetique by Ludwig Van
+VictoryMusic vy Koops94
+Beethoven
