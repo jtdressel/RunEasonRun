@@ -13,11 +13,6 @@ from BadGuy import *
 from Background import *
 from Fireball import *
 from Bar import *
-from Dennis import * 
-from Firen import * 
-from Jack import *
-from Mark import *
-from Julian import *
 
 class BrawlMode(GameMode):
     FIGHT, VICTORY = range(2)
