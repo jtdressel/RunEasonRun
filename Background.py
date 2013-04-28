@@ -56,7 +56,7 @@ class AnimatedBackground(Background):
         P = 5
         if randint(1, 1000) <= P:
             self.image = self.images[1]
-            self.sound_thunder.set_volume(sound_volume)
+            self.sound_thunder.set_volume(sound_volume*3)
             self.sound_thunder.play()
         else:
             self.image = self.images[0]
