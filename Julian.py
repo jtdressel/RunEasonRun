@@ -74,7 +74,7 @@ Animation List:
 		self.HP = self.max_HP
 		self.rect_body = pygame.Rect(0, 0, 27, 57)
 		self.cd_hit = CDTimer(20)
-		self.cd_action = CDTimer(200)
+		self.cd_action = CDTimer(50)
 		self.cd_action.start()
 		self.dmg_period = CDTimer(1000)
 		self.dmg_taken = 0
@@ -132,7 +132,7 @@ Animation List:
 		if self.withinRange(48, target):
 			self.setTarget(self.x, self.y)
 			if self.cd_action.timeUp():
-				P = 50
+				P = 80
 				if randint(1, 100) <= P:
 					self.attack()
 				self.cd_action.start()
@@ -160,22 +160,22 @@ Animation List:
 			else:
 				#energy attack
 				self.damage = 12 + randint(-2,2) + self.level
-			i = randint(0,6)
-			if(i == 5):
-				#energy punch
-				self.damage = 12 + randint(-2, 2) + self.level
-				self.anim_atk = self.anim_energy_punch
-			elif(i == 4):
-				#energy uppercut
-				self.damage = 12 + randint(-2, 2) + self.level
-				self.anim_atk = self.anim_energy_uppercut
-			else:
-				#regular attacks
-				self.damage = 6 + randint(-2, 2) + self.level
-				self.anim_atk = self.anim_attack[randint(0, 1)]
+			# i = randint(0,6)
+			# if(i == 5):
+			# 	#energy punch
+			# 	self.damage = 12 + randint(-2, 2) + self.level
+			# 	self.anim_atk = self.anim_energy_punch
+			# elif(i == 4):
+			# 	#energy uppercut
+			# 	self.damage = 12 + randint(-2, 2) + self.level
+			# 	self.anim_atk = self.anim_energy_uppercut
+			# else:
+			# 	#regular attacks
+			# 	self.damage = 6 + randint(-2, 2) + self.level
+			# 	self.anim_atk = self.anim_attack[randint(0, 1)]
 		   
 		else:#energy beam attack,  punch, uppercut, energy punch, energy uppercut
-			self.damage = 12 + randint(-2,2) + self.level
+			self.damage = 24 + randint(-2,2) + self.level
 			self.anim_atk = self.anim_energy_attack[randint(0, 1)]
 		self.anim_atk.reset()
 		self.anim_atk.start()
